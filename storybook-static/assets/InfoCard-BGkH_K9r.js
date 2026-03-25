@@ -1,0 +1,1 @@
+import{j as s}from"./iframe-BG6vyWzJ.js";import{C as d}from"./CardContent-C_KL8qWj.js";const e=({children:r,...o})=>s.jsx(d,{...o,sx:{backgroundColor:"rstoBlue._10",borderColor:"rstoBlue._30",borderRadius:2,borderWidth:"2px",borderStyle:"solid",...o.sx},children:r});e.__docgenInfo={description:"",methods:[],displayName:"InfoCard"};export{e as I};
