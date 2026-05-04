@@ -36,18 +36,18 @@ Bebas Neue is difficult to read. Restrict it to h1 only (major RSTO product head
 | Variant | Font | Size | Weight | Line height |
 |---|---|---|---|---|
 | h1 | Bebas Neue | 3rem (48px) | — | 3.5rem |
-| h2 | Open Sans | 2rem (32px) | 700 | 2.5rem |
-| h3 | Open Sans | 1.5rem (24px) | 700 | 2rem |
-| h4 | Open Sans | 1.25rem (20px) | 600 | 1.75rem |
-| h5 | Open Sans | 1.125rem (18px) | 600 | 1.5rem |
-| h6 | Open Sans | 1rem (16px) | 600 | 1.5rem |
-| body1 | Open Sans | 1rem (16px) | — | 1.5rem |
-| body2 | Open Sans | 0.875rem (14px) | — | 1.375rem |
-| subtitle1 | Open Sans | 0.875rem (14px) | — | 1.375rem |
-| subtitle2 | Open Sans | 0.75rem (12px) | — | 1.25rem |
-| button | Open Sans | 0.875rem (14px) | 600 | 1.25rem |
-| caption | Open Sans | 0.75rem (12px) | — | 1.125rem |
-| overline | Open Sans | 0.625rem (10px) | 600 | 1rem |
+| h2 | Inter | 2rem (32px) | 700 | 2.5rem |
+| h3 | Inter | 1.5rem (24px) | 700 | 2rem |
+| h4 | Inter | 1.25rem (20px) | 600 | 1.75rem |
+| h5 | Inter | 1.125rem (18px) | 600 | 1.5rem |
+| h6 | Inter | 1rem (16px) | 600 | 1.5rem |
+| body1 | Inter | 1rem (16px) | — | 1.5rem |
+| body2 | Inter | 0.875rem (14px) | — | 1.375rem |
+| subtitle1 | Inter | 0.875rem (14px) | — | 1.375rem |
+| subtitle2 | Inter | 0.75rem (12px) | — | 1.25rem |
+| button | Inter | 0.875rem (14px) | 600 | 1.25rem |
+| caption | Inter | 0.75rem (12px) | — | 1.125rem |
+| overline | Inter | 0.625rem (10px) | 600 | 1rem |
 
 **Reason:** Previous scale had h4 (1.5rem) equal to h2 (1.5rem), and h4/h5 only 2px apart — no visible hierarchy. body1 line-height was 1.375 (too tight, standard is 1.5x).
 

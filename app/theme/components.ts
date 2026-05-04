@@ -59,7 +59,7 @@ export const components: ThemeOptions['components'] = {
             {
                 props: { color: 'secondary' },
                 style: {
-                    backgroundColor: colours.rstoOrange._50,
+                    backgroundColor: colours.rstoOrange._70,
                     color: colours.rstoGray.white,
                 },
             },
@@ -87,7 +87,7 @@ export const components: ThemeOptions['components'] = {
                     backgroundColor: colours.rstoBlue._70,
                     color: colours.rstoGray.white,
                     '&:hover': {
-                        backgroundColor: colours.rstoBlue._60,
+                        backgroundColor: colours.rstoBlue._80,
                     },
                     '&.Mui-disabled': {
                         backgroundColor: colours.rstoGray._30,
@@ -121,10 +121,10 @@ export const components: ThemeOptions['components'] = {
                     border: `2px solid ${colours.rstoGreen._30}`,
                     borderLeft: `4px solid ${colours.rstoGreen._60}`,
                     '& .MuiAlert-icon': {
-                        color: colours.rstoGreen._60,
+                        color: colours.rstoGreen._80,
                     },
                     '& .MuiAlert-action': {
-                        color: colours.rstoGreen._60,
+                        color: colours.rstoGreen._80,
                     },
                 },
             },

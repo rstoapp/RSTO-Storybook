@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import SideMenu from './SideMenu';
-import { NavItem } from './SideMenu';
+import AppSideMenu, { AppSideMenuProps } from './AppSideMenu';
 
 // ── Styled ────────────────────────────────────────────────────────────────────
 
-const SIDE_MENU_WIDTH = 120;
+const SIDE_MENU_WIDTH = 270;
 
 const StyledPage = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -24,24 +23,24 @@ const PageContainer = styled(Box)({
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface PageLayoutProps {
-    navItems: NavItem[];
+    sideMenuProps?: AppSideMenuProps;
     children: React.ReactNode;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 /**
- * The outermost authenticated page shell. Renders the fixed SideMenu on the
+ * The outermost authenticated page shell. Renders the fixed AppSideMenu on the
  * left and a max-width content container on the right.
  *
  * In the production app the nav items and user info come from the MobX store.
  * Here they are prop-driven for Storybook use.
  */
-const PageLayout = ({ navItems, children }: PageLayoutProps) => {
+const PageLayout = ({ sideMenuProps, children }: PageLayoutProps) => {
     return (
         <StyledPage>
             <Box sx={{ position: 'fixed', top: 0, left: 0, height: '100vh', zIndex: 100 }}>
-                <SideMenu items={navItems} />
+                <AppSideMenu {...sideMenuProps} />
             </Box>
             <PageContainer>{children}</PageContainer>
         </StyledPage>

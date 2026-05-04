@@ -4,7 +4,7 @@ import InfoCard from './InfoCard';
 import WarningCard from './WarningCard';
 
 const meta: Meta<typeof InfoCard> = {
-    title: 'RSTO/Atoms/InfoCard',
+    title: 'RSTO/Molecules/InfoCard',
     component: InfoCard,
     tags: ['autodocs'],
     decorators: [

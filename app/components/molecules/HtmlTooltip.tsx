@@ -1,5 +1,6 @@
 import { Tooltip, tooltipClasses, TooltipProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { rstoNeutral } from '../../theme/tokens';
 
 const HtmlTooltip = styled(
     ({ className, children, ...props }: TooltipProps) => (
@@ -10,10 +11,19 @@ const HtmlTooltip = styled(
 )(({ theme }) => ({
     [`& .${tooltipClasses.tooltip}`]: {
         backgroundColor: theme.palette.background.paper,
-        color: theme.palette.text.secondary,
-        padding: 24,
-        width: 320,
-        boxShadow: '0px 12px 32px 0px #19191926, 0px 0px 1px 0px #1919194D',
+        color: rstoNeutral.earth,
+        border: `1px solid ${rstoNeutral.sand}`,
+        borderRadius: '8px',
+        padding: '12px 16px',
+        width: 240,
+        boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+        // Zero MUI's default 14px placement margins — gap is controlled
+        // entirely by the Popper offset modifier in RstoTooltip.
+        margin: 0,
+        [`&.${tooltipClasses.tooltipPlacementLeft}`]:   { margin: 0 },
+        [`&.${tooltipClasses.tooltipPlacementRight}`]:  { margin: 0 },
+        [`&.${tooltipClasses.tooltipPlacementTop}`]:    { margin: 0 },
+        [`&.${tooltipClasses.tooltipPlacementBottom}`]: { margin: 0 },
     },
 }));
 

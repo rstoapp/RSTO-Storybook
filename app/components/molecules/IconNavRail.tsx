@@ -47,7 +47,7 @@ const NavIconButton = styled(IconButton, {
     width: 35,
     height: 35,
     borderRadius: 9,
-    color: isSelected ? theme.palette.rstoOrange._50 : theme.palette.rstoGray._70,
+    color: isSelected ? theme.palette.rstoOrange._70 : theme.palette.rstoGray._80,
     backgroundColor: isSelected ? theme.palette.rstoOrange._10 : 'transparent',
     '&:hover': {
         backgroundColor: isSelected
@@ -59,7 +59,7 @@ const NavIconButton = styled(IconButton, {
 /**
  * A slim vertical icon-only navigation rail. Displays a logo at the top,
  * primary nav icons in the middle, and optional footer icons + avatar at
- * the bottom. Used as the first level of the TwoLevelSidebar.
+ * the bottom.
  */
 const IconNavRail = ({ items, footerItems = [], selectedId, onSelect, onExpandClick }: IconNavRailProps) => {
     return (

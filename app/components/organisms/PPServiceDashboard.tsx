@@ -142,7 +142,7 @@ const TierSummaryCard = ({ label, count, percentage, colour, icon }: TierSummary
                         {label}
                     </Typography>
                 </Stack>
-                <Typography variant="h4" fontWeight={700}>
+                <Typography variant="h4">
                     {count}
                 </Typography>
                 <Typography variant="body2" color="rstoGray._90">
@@ -181,7 +181,7 @@ const SAStatCard = ({ label, value, subtitle, changeLabel, isPositive, icon }: S
                         {label}
                     </Typography>
                 </Stack>
-                <Typography variant="h4" fontWeight={700}>
+                <Typography variant="h4">
                     {value}
                 </Typography>
                 <Typography variant="body2" color="rstoGray._90">
@@ -409,11 +409,7 @@ const PPServiceDashboard = ({
             {/* 3-tier stacked bar chart */}
             <ChartCard
                 chartName="Chart One"
-                title={
-                    <Typography variant="h5" fontWeight={700}>
-                        Participation tier breakdown by quarter
-                    </Typography>
-                }
+                title="Participation tier breakdown by quarter"
                 subTitle={`${participationData.trend[0]?.period} – ${participationData.trend[participationData.trend.length - 1]?.period}`}
                 chart={
                     <BarChart
@@ -479,11 +475,7 @@ const PPServiceDashboard = ({
                 <Grid item xs={12} md={6}>
                     <ChartCard
                         chartName="Population Trend"
-                        title={
-                            <Typography variant="h6" fontWeight={700}>
-                                0–8 year-old population over time
-                            </Typography>
-                        }
+                        title="0–8 year-old population over time"
                         chart={
                             <LineChart
                                 aspectRatio={TREND_ASPECT_RATIO}
@@ -521,11 +513,7 @@ const PPServiceDashboard = ({
                 <Grid item xs={12} md={6}>
                     <ChartCard
                         chartName="AEDC DV1 Trend"
-                        title={
-                            <Typography variant="h6" fontWeight={700}>
-                                Developmental vulnerability (DV1) over time
-                            </Typography>
-                        }
+                        title="Developmental vulnerability (DV1) over time"
                         chart={
                             <LineChart
                                 aspectRatio={TREND_ASPECT_RATIO}

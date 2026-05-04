@@ -30,13 +30,13 @@ const InsightCard = ({
                             icon
                         ) : (
                             <LightbulbOutlinedIcon
-                                sx={{ color: 'rstoBlue._60', width: '16px', height: '16px' }}
+                                sx={{ color: 'rstoBlue._70', width: '16px', height: '16px' }}
                             />
                         )}
                         <Typography
                             variant="overline"
                             sx={{
-                                color: 'rstoBlue._60',
+                                color: 'rstoBlue._70',
                                 marginLeft: '8px',
                             }}
                         >
@@ -50,7 +50,7 @@ const InsightCard = ({
                             <Typography
                                 variant="h5"
                                 color="rstoGray._90"
-                                sx={{ fontWeight: '700', marginTop: '4px', marginBottom: '4px' }}
+                                sx={{ marginTop: '4px', marginBottom: '4px' }}
                             >
                                 {title === undefined ? <Skeleton /> : title}
                             </Typography>

@@ -5,7 +5,7 @@ import RstoTooltip from './RstoTooltip';
 const HELP_TEXT = 'This indicator measures the percentage of children who received their immunisation on schedule. Data is sourced from the national health registry.';
 
 const meta: Meta<typeof RstoTooltip> = {
-    title: 'RSTO/Atoms/Tooltip',
+    title: 'RSTO/Molecules/RstoTooltip',
     component: RstoTooltip,
     tags: ['autodocs'],
     decorators: [

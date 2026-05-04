@@ -13,18 +13,16 @@ type Story = StoryObj<typeof Typography>;
 export const TypeScale: Story = {
     render: () => (
         <Stack spacing={2}>
-            <Typography variant="h1">H1 — Bebas Neue 48px — RSTO product headings only</Typography>
-            <Typography variant="h2">H2 — Open Sans 32px, 700</Typography>
-            <Typography variant="h3">H3 — Open Sans 24px, 700</Typography>
-            <Typography variant="h4">H4 — Open Sans 20px, 600</Typography>
-            <Typography variant="h5">H5 — Open Sans 18px, 600</Typography>
-            <Typography variant="h6">H6 — Open Sans 16px, 600</Typography>
-            <Typography variant="subtitle1">Subtitle 1 — Open Sans 14px</Typography>
-            <Typography variant="subtitle2">Subtitle 2 — Open Sans 12px</Typography>
-            <Typography variant="body1">Body 1 — Open Sans 16px. Used for primary content.</Typography>
-            <Typography variant="body2">Body 2 — Open Sans 14px. Used for secondary content.</Typography>
-            <Typography variant="caption">Caption — Open Sans 12px</Typography>
-            <Typography variant="overline">Overline — Open Sans 10px uppercase</Typography>
+            <Typography variant="h1">H1 — Bebas Neue 32px — Service provider / page names</Typography>
+            <Typography variant="h2">H2 — Inter 32px, 700 — Section headings</Typography>
+            <Typography variant="h3">H3 — Inter 24px, 700</Typography>
+            <Typography variant="h4">H4 — Inter 20px, 600</Typography>
+            <Typography variant="h5">H5 — Inter 18px, 600</Typography>
+            <Typography variant="h6">H6 — Inter 16px, 600 — use sparingly; prefer body1 + fontWeight 600</Typography>
+            <Typography variant="body1">Body 1 — Inter 16px. Used for primary content.</Typography>
+            <Typography variant="body2">Body 2 — Inter 14px. Used for secondary content.</Typography>
+            <Typography variant="caption">Caption — Inter 12px</Typography>
+            <Typography variant="overline">Overline — Inter 11px uppercase</Typography>
         </Stack>
     ),
 };

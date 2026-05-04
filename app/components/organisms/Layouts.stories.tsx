@@ -1,8 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { Box, Typography } from '@mui/material';
-import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
-import UploadRoundedIcon from '@mui/icons-material/UploadRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import { Box, Chip, Stack, Typography } from '@mui/material';
 import DashboardLayout from './DashboardLayout';
 import IndicatorDashboardNavigation from './IndicatorDashboardNavigation';
 import PageLayout from './PageLayout';
@@ -17,12 +14,6 @@ export default meta;
 type Story = StoryObj;
 
 // ── Shared fixtures ───────────────────────────────────────────────────────────
-
-const NAV_ITEMS = [
-    { icon: BarChartRoundedIcon, label: 'Data', href: '/dashboard' },
-    { icon: UploadRoundedIcon, label: 'Upload', href: '/upload' },
-    { icon: LogoutRoundedIcon, label: 'Log out', href: '/logout' },
-];
 
 const ANC_INDEX = (
     <IndicatorDashboardNavigation
@@ -89,13 +80,41 @@ export const DashboardNoHeader: Story = {
 
 // ── PageLayout ────────────────────────────────────────────────────────────────
 
+export const ServiceProviderIndicatorPage: Story = {
+    name: 'PageLayout — indicator title under service provider name',
+    parameters: {
+        nextjs: { navigation: { pathname: '/dashboard' } },
+    },
+    render: () => (
+        <PageLayout>
+            <Stack spacing={0.5} mb={3}>
+                <Typography variant="h1">
+                    MARYBOROUGH DISTRICT HEALTH SERVICE
+                </Typography>
+                <Typography variant="h5" color="text.secondary" sx={{ mt: 1 }}>
+                    Are there adequate antenatal care facilities?
+                </Typography>
+                <Box>
+                    <Chip
+                        label="QN1 | Quantity Indicator 01"
+                        size="small"
+                        variant="outlined"
+                        sx={{ borderRadius: '6px', fontSize: 12 }}
+                    />
+                </Box>
+            </Stack>
+            <PlaceholderContent label="Indicator content area" />
+        </PageLayout>
+    ),
+};
+
 export const Page: Story = {
     name: 'PageLayout (full shell)',
     parameters: {
         nextjs: { navigation: { pathname: '/dashboard' } },
     },
     render: () => (
-        <PageLayout navItems={NAV_ITEMS}>
+        <PageLayout>
             <DashboardLayout
                 header={<Typography variant="h2">Antenatal Care</Typography>}
                 indexMenu={ANC_INDEX}

@@ -34,14 +34,14 @@ const MenuItemWrapper = styled(NextLink)(({ theme }) => ({
         justifyContent: 'center',
         borderRadius: '8px',
         background: 'none',
-        color: theme.palette.rstoGray._60,
+        color: theme.palette.rstoGray._80,
     },
 
     '&:hover': {
         background: theme.palette.rstoBlue._10,
         '.iconWrapper': {
             background: theme.palette.rstoBlue._20,
-            color: theme.palette.rstoBlue._60,
+            color: theme.palette.rstoBlue._70,
         },
     },
 
@@ -49,7 +49,7 @@ const MenuItemWrapper = styled(NextLink)(({ theme }) => ({
         background: theme.palette.rstoOrange._10,
         '.iconWrapper': {
             background: theme.palette.rstoOrange._20,
-            color: theme.palette.rstoOrange._50,
+            color: theme.palette.rstoOrange._70,
         },
         '.label': { fontWeight: '700' },
     },

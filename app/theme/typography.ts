@@ -1,16 +1,16 @@
 import { ThemeOptions } from '@mui/material/styles/createTheme';
+import { fonts } from './tokens';
 
 // Fonts are loaded via Google Fonts in globals.css
-// Bebas Neue is used sparingly — h1 only, for major RSTO product headings
-const BEBAS_NEUE = '"Bebas Neue", sans-serif';
-const INTER = '"Inter", sans-serif';
+// Fraunces is the display typeface (replaces Bebas Neue) — used for h1–h3
+// Open Sans is the body typeface (replaces Inter)
 
 export const typography: ThemeOptions['typography'] = {
-    fontFamily: INTER,
+    fontFamily: fonts.body,
     h1: {
-        fontFamily: BEBAS_NEUE,
-        fontSize: '3rem',        // 48px — display size, Bebas Neue has the space
-        lineHeight: '3.5rem',    // 1.17x — tight is correct for display type
+        fontFamily: fonts.display,
+        fontSize: '2rem',        // 32px — matches actual usage across all pages
+        lineHeight: '2.5rem',    // 1.25x
         letterSpacing: '0.02em',
     },
     h2: {
@@ -43,16 +43,6 @@ export const typography: ThemeOptions['typography'] = {
         letterSpacing: 0,
         fontWeight: 600,
     },
-    subtitle1: {
-        fontSize: '0.875rem',    // 14px
-        lineHeight: '1.375rem',  // 1.57x
-        letterSpacing: '0.01em',
-    },
-    subtitle2: {
-        fontSize: '0.75rem',     // 12px
-        lineHeight: '1.25rem',   // 1.67x
-        letterSpacing: '0.01em',
-    },
     body1: {
         fontSize: '1rem',        // 16px
         lineHeight: '1.5rem',    // 1.5x — standard readable line height
@@ -76,7 +66,7 @@ export const typography: ThemeOptions['typography'] = {
         letterSpacing: '0.02em',
     },
     overline: {
-        fontSize: '0.625rem',
+        fontSize: '0.6875rem',   // 11px — minimum for WCAG legibility
         lineHeight: '1rem',
         letterSpacing: '0.08em',
         textTransform: 'uppercase',

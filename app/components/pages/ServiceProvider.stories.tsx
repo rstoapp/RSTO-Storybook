@@ -1,63 +1,48 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
-import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import PublishOutlinedIcon from '@mui/icons-material/PublishOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import * as React from 'react';
 
 import InsightCard from '../molecules/InsightCard';
 import RstoChip from '../molecules/RstoChip';
 import ChartCard from '../organisms/charts/ChartCard';
 import LineChart from '../organisms/charts/LineChart';
-import TwoLevelSidebar from '../organisms/TwoLevelSidebar';
+import AppSideMenu, { RstoNavItem } from '../organisms/AppSideMenu';
 
-// ── Nav rail items ──────────────────────────────────────────────────────────
+// ── Nav items ────────────────────────────────────────────────────────────────
 
-const NAV_ITEMS = [
-    { icon: DescriptionOutlinedIcon, label: 'Reports', id: 'reports' },
-    { icon: CheckBoxOutlinedIcon, label: 'Tasks', id: 'tasks' },
-    { icon: FolderOutlinedIcon, label: 'Files', id: 'files' },
-    { icon: CalendarTodayOutlinedIcon, label: 'Calendar', id: 'calendar' },
-    { icon: GroupOutlinedIcon, label: 'Team', id: 'team' },
-    { icon: TrendingUpIcon, label: 'Analytics', id: 'analytics' },
-    { icon: PublishOutlinedIcon, label: 'Upload', id: 'upload' },
-];
-
-const FOOTER_ITEMS = [
-    { icon: SettingsOutlinedIcon, label: 'Settings', id: 'settings' },
-];
-
-// ── Sidebar sections ────────────────────────────────────────────────────────
-
-const SIDEBAR_SECTIONS = [
+const NAV_ITEMS: RstoNavItem[] = [
     {
-        label: 'Quantity',
-        icon: VisibilityOutlinedIcon,
-        defaultOpen: true,
-        items: [{ code: 'QN1', description: 'Are there enough ECEC places?' }],
+        id: 'dashboard',
+        label: 'Dashboard',
+        icon: <DashboardOutlinedIcon sx={{ fontSize: 16 }} />,
+        children: [
+            {
+                id: 'quantity',
+                label: 'Quantity',
+                children: [{ id: 'qn1', code: 'QN1', label: 'Are there enough ECEC places?' }],
+            },
+            {
+                id: 'quality',
+                label: 'Quality',
+                children: [{ id: 'ql1', code: 'QL1', label: 'Are we delivering quality services?' }],
+            },
+            {
+                id: 'participation',
+                label: 'Participation',
+                children: [{ id: 'p1', code: 'P1', label: 'Community engagement levels' }],
+            },
+        ],
     },
-    {
-        label: 'Quality',
-        icon: GridViewOutlinedIcon,
-        defaultOpen: true,
-        items: [{ code: 'QL1', description: 'Are we delivering quality services?' }],
-    },
-    {
-        label: 'Participation',
-        icon: DescriptionOutlinedIcon,
-        defaultOpen: false,
-        items: [{ code: 'P1', description: 'Are we delivering quality services?' }],
-    },
+    { id: 'upload', label: 'Upload', icon: <FileUploadOutlinedIcon sx={{ fontSize: 16 }} /> },
+    { id: 'settings', label: 'Settings', icon: <SettingsOutlinedIcon sx={{ fontSize: 16 }} /> },
 ];
 
 // ── Chart data ──────────────────────────────────────────────────────────────
@@ -131,17 +116,11 @@ const LegendDot = ({ color, label }: { color: string; label: string }) => (
 
 const ServiceProviderPage = () => (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
-        {/* Two-level sidebar */}
-        <TwoLevelSidebar
-            navRailProps={{
-                items: NAV_ITEMS,
-                footerItems: FOOTER_ITEMS,
-                selectedId: 'reports',
-            }}
-            title="DASHBOARD"
-            selectorOptions={[]}
-            searchPlaceholder="Search dashboard"
-            sections={SIDEBAR_SECTIONS}
+        <AppSideMenu
+            navItems={NAV_ITEMS}
+            activeItemId="qn1"
+            defaultOpenIds={['dashboard', 'quantity']}
+            onLogout={() => {}}
         />
 
         {/* Main content */}
@@ -149,7 +128,7 @@ const ServiceProviderPage = () => (
             {/* Page header */}
             <Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={1}>
                 <Box>
-                    <Typography variant="h1" sx={{ fontSize: 32, lineHeight: '40px' }}>
+                    <Typography variant="h1">
                         GOWRIE VICTORIA
                     </Typography>
                     <Stack direction="row" alignItems="center" spacing={0.5} mt={0.5}>
@@ -209,12 +188,12 @@ const ServiceProviderPage = () => (
                         chartName="Chart One - Lead Indicator Projected On Track"
                         title={
                             <Stack>
-                                <Typography variant="subtitle1">Percentage on track to attend 600+ hours amongst</Typography>
+                                <Typography variant="body2">Percentage on track to attend 600+ hours amongst</Typography>
                                 <Stack direction="row" alignItems="center" spacing={0.5} flexWrap="wrap">
-                                    <Typography variant="subtitle1" fontWeight={600}>active children ▾</Typography>
-                                    <Typography variant="subtitle1">at</Typography>
-                                    <Typography variant="subtitle1" fontWeight={600}>Broadmeadows ▾</Typography>
-                                    <Typography variant="subtitle1" fontWeight={600}>2 years before school ▾</Typography>
+                                    <Typography variant="body2" fontWeight={600}>active children ▾</Typography>
+                                    <Typography variant="body2">at</Typography>
+                                    <Typography variant="body2" fontWeight={600}>Broadmeadows ▾</Typography>
+                                    <Typography variant="body2" fontWeight={600}>2 years before school ▾</Typography>
                                 </Stack>
                             </Stack>
                         }
@@ -237,12 +216,12 @@ const ServiceProviderPage = () => (
                         chartName="Chart Two - Lag Indicator Historical Achieved"
                         title={
                             <Stack>
-                                <Typography variant="subtitle1">Percentage of children who actually received 600+ hours amongst</Typography>
+                                <Typography variant="body2">Percentage of children who actually received 600+ hours amongst</Typography>
                                 <Stack direction="row" alignItems="center" spacing={0.5} flexWrap="wrap">
-                                    <Typography variant="subtitle1" fontWeight={600}>active children ▾</Typography>
-                                    <Typography variant="subtitle1">at</Typography>
-                                    <Typography variant="subtitle1" fontWeight={600}>Broadmeadows ▾</Typography>
-                                    <Typography variant="subtitle1" fontWeight={600}>2 years before school ▾</Typography>
+                                    <Typography variant="body2" fontWeight={600}>active children ▾</Typography>
+                                    <Typography variant="body2">at</Typography>
+                                    <Typography variant="body2" fontWeight={600}>Broadmeadows ▾</Typography>
+                                    <Typography variant="body2" fontWeight={600}>2 years before school ▾</Typography>
                                 </Stack>
                             </Stack>
                         }

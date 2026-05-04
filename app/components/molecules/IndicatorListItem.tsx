@@ -15,8 +15,7 @@ export interface IndicatorListItemProps {
 
 /**
  * A navigation list item that displays an inline orange indicator chip
- * (e.g. QN1, QL1, P1) followed by a description. Used inside expandable
- * sections of the TwoLevelSidebar detail panel.
+ * (e.g. QN1, QL1, P1) followed by a description.
  */
 const IndicatorListItem = ({
     code,

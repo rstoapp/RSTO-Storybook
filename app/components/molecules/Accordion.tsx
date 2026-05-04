@@ -18,6 +18,10 @@ interface AccordionProps {
 const StyledAccordion = styled(MuiAccordion)(({ theme }) => ({
     boxShadow: 'none',
     backgroundColor: theme.palette.common.white,
+    borderRadius: '8px',
+    overflow: 'hidden',
+    '&:first-of-type': { borderRadius: '8px' },
+    '&:last-of-type': { borderRadius: '8px' },
     '&:before': {
         display: 'none',
     },

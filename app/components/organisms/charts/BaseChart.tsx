@@ -4,6 +4,9 @@ import { ChartData, ChartOptions, ChartTypeRegistry, Plugin } from 'chart.js';
 import merge from 'lodash/merge';
 import { BoxProps } from '@mui/system';
 import AspectRatio, { AspectRatioProps } from './AspectRatio';
+import { P, CHART_FONT_FAMILY, CHART_FONT_SIZES } from './chart-theme';
+
+const DEFAULT_ASPECT_RATIO: AspectRatioProps = { width: 16, height: 9 };
 
 const baseOptions: ChartOptions = {
     plugins: {
@@ -13,10 +16,11 @@ const baseOptions: ChartOptions = {
             align: 'start' as const,
             fullSize: true,
             labels: {
-                boxWidth: 20,
-                boxHeight: 8,
-                padding: 16,
-                color: '#474747',
+                boxWidth: 11,
+                boxHeight: 11,
+                padding: 14,
+                color: P.shadow,
+                font: { family: CHART_FONT_FAMILY, size: CHART_FONT_SIZES.legend },
             },
         },
     },
@@ -26,21 +30,23 @@ const baseOptions: ChartOptions = {
 };
 
 type BaseChartProps = {
-    aspectRatio: AspectRatioProps;
+    aspectRatio?: AspectRatioProps;
     chartData?: ChartData | null;
+    isLoading?: boolean;
     options: ChartOptions;
     type: keyof ChartTypeRegistry;
     optionsOverrides?: ChartOptions;
     plugins?: Plugin[];
 } & BoxProps;
 
-const BaseChart = ({ aspectRatio, chartData, options, type, optionsOverrides, plugins, ...boxProps }: BaseChartProps) => {
+const BaseChart = ({ aspectRatio = DEFAULT_ASPECT_RATIO, chartData, isLoading, options, type, optionsOverrides, plugins, ...boxProps }: BaseChartProps) => {
     const combinedOptions = merge({}, baseOptions, options, optionsOverrides);
+    const showSkeleton = isLoading || !chartData;
     return (
         <AspectRatio width={aspectRatio.width} height={aspectRatio.height}>
-            {chartData ? (
+            {!showSkeleton ? (
                 <Box {...boxProps} sx={{ position: 'relative', width: '100%', height: '100%', ...boxProps.sx }}>
-                    <Chart type={type} data={chartData} options={combinedOptions} plugins={plugins} />
+                    <Chart type={type} data={chartData!} options={combinedOptions} plugins={plugins} />
                 </Box>
             ) : (
                 <Skeleton height="100%" variant="rectangular" />

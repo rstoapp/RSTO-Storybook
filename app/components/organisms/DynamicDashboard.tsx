@@ -97,7 +97,7 @@ function renderChart({ chartType, chartName, title, subtitle, data }: ChartWidge
     return (
         <ChartCard
             chartName={chartName}
-            title={<Typography variant="h5" fontWeight={700}>{title}</Typography>}
+            title={title}
             subTitle={subtitle}
             chart={chart}
         />

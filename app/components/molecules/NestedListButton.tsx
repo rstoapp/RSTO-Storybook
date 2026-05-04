@@ -15,7 +15,7 @@ export interface NestedListButtonProps extends Omit<ListItemButtonProps, 'onClic
  */
 const NestedListButton = ({ title, description, tag, onClick, ...rest }: NestedListButtonProps) => {
     return (
-        <RstoListItemButton className="nested" onClick={onClick} sx={{ pl: '22px' }} {...rest}>
+        <RstoListItemButton className="nested" onClick={onClick} sx={{ pl: '20px' }} {...rest}>
             <ListItemText
                 primary={
                     <Typography variant="overline" sx={{ lineHeight: 1.4, display: 'block' }}>
