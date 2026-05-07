@@ -22,7 +22,6 @@ function makeDatasets(alpha = 0.88) {
         data: SERIES_DATA[i],
         backgroundColor: hexAlpha(STACK_COLORS[i], alpha),
         borderColor: STACK_COLORS[i],
-        borderWidth: 1,
         stack: 'main',
     }));
 }
@@ -182,7 +181,6 @@ export const SemanticRAG: Story = {
                     data: [45, 50, 54, 58, 62, 67],
                     backgroundColor: hexAlpha(SEMANTIC.positive, 0.88),
                     borderColor: SEMANTIC.positive,
-                    borderWidth: 1,
                     stack: 'main',
                 },
                 {
@@ -190,7 +188,6 @@ export const SemanticRAG: Story = {
                     data: [20, 18, 17, 16, 15, 13],
                     backgroundColor: hexAlpha(SEMANTIC.neutral, 0.88),
                     borderColor: SEMANTIC.neutral,
-                    borderWidth: 1,
                     stack: 'main',
                 },
                 {
@@ -198,7 +195,6 @@ export const SemanticRAG: Story = {
                     data: [20, 18, 17, 16, 14, 12],
                     backgroundColor: hexAlpha(SEMANTIC.caution, 0.88),
                     borderColor: SEMANTIC.caution,
-                    borderWidth: 1,
                     stack: 'main',
                 },
                 {
@@ -206,7 +202,6 @@ export const SemanticRAG: Story = {
                     data: [15, 14, 12, 10, 9, 8],
                     backgroundColor: hexAlpha(SEMANTIC.attention, 0.88),
                     borderColor: SEMANTIC.attention,
-                    borderWidth: 1,
                     stack: 'main',
                 },
             ],

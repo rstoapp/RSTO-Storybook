@@ -44,6 +44,8 @@ export interface ScaleConfig {
   /** Explicit min/max for Y axis. */
   yMin?: number;
   yMax?: number;
+  /** Force a fixed interval between Y ticks, e.g. 25 for 0/25/50/75/100. Overrides maxTicksLimit. */
+  yStepSize?: number;
   /** Density preset — overrides fontSize/yPadding when supplied. */
   density?: ChartDensity;
   /** Font size override. Defaults to CHART_FONT_SIZES.axisLabel. */
@@ -65,6 +67,11 @@ export const BASE_OPTIONS = {
   responsive: true,
   maintainAspectRatio: false,
   animation: { duration: 350 },
+  // Zero border on bar segments — prevents visible seam lines where stacked
+  // segments meet. Fill colour alone differentiates each segment.
+  datasets: {
+    bar: { borderWidth: 0 },
+  },
 } satisfies Partial<ChartOptions>;
 
 // ─── Scales ───────────────────────────────────────────────────────────────────
@@ -84,6 +91,7 @@ export function makeScales(config: ScaleConfig = {}): Record<string, ScaleOption
     xAutoSkip = true,
     yMin,
     yMax,
+    yStepSize,
     density,
     yPadding,
   } = config;
@@ -120,7 +128,7 @@ export function makeScales(config: ScaleConfig = {}): Record<string, ScaleOption
         font: tickFont,
         color: tickColor,
         padding: resolvedYPadding,
-        maxTicksLimit: 5,
+        ...(yStepSize !== undefined ? { stepSize: yStepSize } : { maxTicksLimit: 5 }),
         ...(yTickCallback ? { callback: yTickCallback } : {}),
       },
       ...(yMin !== undefined ? { min: yMin } : {}),

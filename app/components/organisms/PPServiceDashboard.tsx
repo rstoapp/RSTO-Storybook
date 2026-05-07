@@ -410,7 +410,6 @@ const PPServiceDashboard = ({
             <ChartCard
                 chartName="Chart One"
                 title="Participation tier breakdown by quarter"
-                subTitle={`${participationData.trend[0]?.period} – ${participationData.trend[participationData.trend.length - 1]?.period}`}
                 chart={
                     <BarChart
                         aspectRatio={CHART_ASPECT_RATIO}

@@ -207,6 +207,71 @@ When adding a new component style, prefer a theme override in `components.ts` ov
 
 ---
 
+## Layout & Responsive
+
+### Breakpoints in use
+
+MUI defaults apply. The two breakpoints that matter for dashboard layouts:
+
+| Breakpoint | Width  | Meaning in this system          |
+|------------|--------|---------------------------------|
+| `sm`       | 600px  | Smallest tablet / large phone   |
+| `lg`       | 1200px | Sidebar + content comfortably fits |
+
+### Chart grids
+
+| Layout context              | Grid prop | Result                        |
+|-----------------------------|-----------|-------------------------------|
+| Full-bleed (no sidebar)     | `md={6}`  | 2-up from 900px               |
+| With sidebar (~288px wide)  | `lg={6}`  | 2-up from 1200px              |
+| Any                         | `xs={12}` | 1-up below the above          |
+
+**Rule:** Never use `md={6}` in a layout that includes `AppSideMenu` or `DashboardLayout`. The remaining content pane is too narrow at 900px — charts clip and legends become illegible. Always use `lg={6}`.
+
+**Minimum chart container width: ~560px.** Below this, axis labels, legends, and tick marks become unreadable. Document this constraint in the `ChartCard` story `docs.description`.
+
+**`ChartCard` tooltip is mandatory.** Every `ChartCard` must include a `titleTooltip` prop explaining what the chart measures. Never render a `ChartCard` without one.
+
+### Sidebar responsive behaviour — implemented in `AppSideMenu`
+
+| Viewport | Sidebar state | Width |
+|---|---|---|
+| ≥ `md` (900px+) | Expanded — full label nav | 270px |
+| `sm`–`md` (600–899px) | Auto-collapsed — icon rail only | 68px |
+| < `sm` (< 600px) | **Not yet implemented** — intended: hidden, full-screen `Drawer` via hamburger |
+
+`AppSideMenu` uses `useMediaQuery(theme.breakpoints.down('md'))` to auto-collapse below 900px. The user can still expand or collapse manually at any width — the breakpoint only sets the default. The user override resets whenever the breakpoint changes.
+
+#### Still to implement: mobile Drawer (< 600px)
+- Below `sm`: `AppSideMenu` should not render inline. The consuming page should render a hamburger icon that opens an MUI `Drawer` (temporary, anchored left).
+- `DashboardLayout` needs `display: { xs: 'block', lg: 'flex' }` and `IndexContainer` `display: { xs: 'none', sm: 'block' }`.
+- Until this is done, avoid showing the page story at < 600px.
+
+#### Content at mobile widths
+| Component      | Mobile behaviour                                              |
+|----------------|---------------------------------------------------------------|
+| Chart grid     | Already handled — `xs={12}` forces 1-up                      |
+| `InsightCard`  | Reflowing card — no change needed                             |
+| Stat chips row | Wrap is already set (`flexWrap="wrap"`) — no change needed    |
+| Page header    | Stack vertically: `direction={{ xs: 'column', sm: 'row' }}`  |
+| Export/period buttons | Move into a `...` overflow menu or below the heading at xs |
+
+#### Storybook story requirements
+When implementing the mobile sidebar, add a `Mobile` story to `ServiceProvider.stories.tsx`:
+
+```tsx
+export const Mobile: Story = {
+    name: 'Gowrie Victoria — Mobile (414px)',
+    parameters: {
+        viewport: { defaultViewport: 'mobile1' },
+        layout: 'fullscreen',
+    },
+    render: () => <ServiceProviderPage />,
+};
+```
+
+---
+
 ## Pending Changes
 
 `CHANGES.md` tracks design decisions ready to apply to `rsto-app` but not yet merged — check it before modifying `RstoTooltip`, accordion styles, or the typography scale.

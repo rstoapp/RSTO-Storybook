@@ -98,7 +98,6 @@ function renderChart({ chartType, chartName, title, subtitle, data }: ChartWidge
         <ChartCard
             chartName={chartName}
             title={title}
-            subTitle={subtitle}
             chart={chart}
         />
     );

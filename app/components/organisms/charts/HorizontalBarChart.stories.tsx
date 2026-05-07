@@ -15,7 +15,6 @@ function makeRAGDatasets(alpha: number) {
             data: [4, 3, 5, 2, 4, 3],
             backgroundColor: hexAlpha(SEMANTIC.positive, alpha),
             borderColor: SEMANTIC.positive,
-            borderWidth: 1,
             stack: 'main',
         },
         {
@@ -23,7 +22,6 @@ function makeRAGDatasets(alpha: number) {
             data: [2, 2, 1, 2, 2, 2],
             backgroundColor: hexAlpha(SEMANTIC.neutral, alpha),
             borderColor: SEMANTIC.neutral,
-            borderWidth: 1,
             stack: 'main',
         },
         {
@@ -31,7 +29,6 @@ function makeRAGDatasets(alpha: number) {
             data: [2, 2, 1, 3, 2, 2],
             backgroundColor: hexAlpha(SEMANTIC.caution, alpha),
             borderColor: SEMANTIC.caution,
-            borderWidth: 1,
             stack: 'main',
         },
         {
@@ -39,7 +36,6 @@ function makeRAGDatasets(alpha: number) {
             data: [1, 1, 1, 2, 1, 2],
             backgroundColor: hexAlpha(SEMANTIC.attention, alpha),
             borderColor: SEMANTIC.attention,
-            borderWidth: 1,
             stack: 'main',
         },
     ];
@@ -113,10 +109,10 @@ export const CommunityView: Story = {
         data: {
             labels: COMPONENTS,
             datasets: [
-                { label: SEMANTIC_LABELS.positive, data: [3, 2, 4, 2, 3, 2], backgroundColor: hexAlpha(SEMANTIC.positive, 0.88), borderColor: SEMANTIC.positive, borderWidth: 1, stack: 'main' },
-                { label: SEMANTIC_LABELS.neutral,  data: [2, 2, 1, 1, 2, 2], backgroundColor: hexAlpha(SEMANTIC.neutral, 0.88),  borderColor: SEMANTIC.neutral,  borderWidth: 1, stack: 'main' },
-                { label: SEMANTIC_LABELS.caution,  data: [2, 3, 2, 2, 2, 3], backgroundColor: hexAlpha(SEMANTIC.caution, 0.88),  borderColor: SEMANTIC.caution,  borderWidth: 1, stack: 'main' },
-                { label: SEMANTIC_LABELS.attention,data: [1, 1, 1, 3, 1, 1], backgroundColor: hexAlpha(SEMANTIC.attention, 0.88),borderColor: SEMANTIC.attention,borderWidth: 1, stack: 'main' },
+                { label: SEMANTIC_LABELS.positive, data: [3, 2, 4, 2, 3, 2], backgroundColor: hexAlpha(SEMANTIC.positive, 0.88), borderColor: SEMANTIC.positive, stack: 'main' },
+                { label: SEMANTIC_LABELS.neutral,  data: [2, 2, 1, 1, 2, 2], backgroundColor: hexAlpha(SEMANTIC.neutral, 0.88),  borderColor: SEMANTIC.neutral,  stack: 'main' },
+                { label: SEMANTIC_LABELS.caution,  data: [2, 3, 2, 2, 2, 3], backgroundColor: hexAlpha(SEMANTIC.caution, 0.88),  borderColor: SEMANTIC.caution,  stack: 'main' },
+                { label: SEMANTIC_LABELS.attention,data: [1, 1, 1, 3, 1, 1], backgroundColor: hexAlpha(SEMANTIC.attention, 0.88),borderColor: SEMANTIC.attention, stack: 'main' },
             ],
         },
         options: {
@@ -146,7 +142,6 @@ export const SingleSeries: Story = {
                     data: [12, 8, 15, 6, 10, 9],
                     backgroundColor: hexAlpha(SERIES_COLORS[0], 0.88),
                     borderColor: SERIES_COLORS[0],
-                    borderWidth: 1,
                 },
             ],
         },

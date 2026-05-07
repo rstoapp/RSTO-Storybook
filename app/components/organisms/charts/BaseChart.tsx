@@ -37,19 +37,32 @@ type BaseChartProps = {
     type: keyof ChartTypeRegistry;
     optionsOverrides?: ChartOptions;
     plugins?: Plugin[];
+    /** Accessible description of the chart for screen readers. Defaults to a generic label. */
+    ariaLabel?: string;
 } & BoxProps;
 
-const BaseChart = ({ aspectRatio = DEFAULT_ASPECT_RATIO, chartData, isLoading, options, type, optionsOverrides, plugins, ...boxProps }: BaseChartProps) => {
+const BaseChart = ({ aspectRatio = DEFAULT_ASPECT_RATIO, chartData, isLoading, options, type, optionsOverrides, plugins, ariaLabel, ...boxProps }: BaseChartProps) => {
     const combinedOptions = merge({}, baseOptions, options, optionsOverrides);
     const showSkeleton = isLoading || !chartData;
     return (
         <AspectRatio width={aspectRatio.width} height={aspectRatio.height}>
             {!showSkeleton ? (
                 <Box {...boxProps} sx={{ position: 'relative', width: '100%', height: '100%', ...boxProps.sx }}>
-                    <Chart type={type} data={chartData!} options={combinedOptions} plugins={plugins} />
+                    <Chart
+                        type={type}
+                        data={chartData!}
+                        options={combinedOptions}
+                        plugins={plugins}
+                        aria-label={ariaLabel ?? 'Chart'}
+                        role="img"
+                    />
                 </Box>
             ) : (
-                <Skeleton height="100%" variant="rectangular" />
+                <Skeleton
+                    height="100%"
+                    variant="rectangular"
+                    sx={{ bgcolor: P.frost, borderRadius: '8px', transform: 'none' }}
+                />
             )}
         </AspectRatio>
     );

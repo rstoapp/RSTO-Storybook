@@ -33,7 +33,7 @@ export const STACKED_TOP_RADIUS = 4;
 const ORIG_DRAW = Symbol('origDraw');
 
 type BarEl = {
-  [ORIG_DRAW]?: () => void;
+  [ORIG_DRAW]?: (ctx: CanvasRenderingContext2D) => void;
   draw: (ctx: CanvasRenderingContext2D) => void;
   options: {
     borderRadius: number | { topLeft: number; topRight: number; bottomLeft: number; bottomRight: number };
@@ -52,52 +52,66 @@ function applyRadiusAndSuppressZeros(chart: Chart): void {
   if (!r) return;
 
   const horizontal = chart.options.indexAxis === 'y';
-  const bars = barDatasets(chart);
-  const numPoints = bars[0]?.ds?.data?.length ?? 0;
+  const allBars = barDatasets(chart);
 
-  for (let col = 0; col < numPoints; col++) {
-    // Find the topmost non-zero bar dataset for this column.
-    let topIndex = -1;
-    for (let k = bars.length - 1; k >= 0; k--) {
-      if (Number(bars[k].ds.data[col]) > 0) { topIndex = bars[k].i; break; }
-    }
+  // Group bar datasets by their `stack` key so each independent stack
+  // (e.g. 'gp' and 'mdhs' in a grouped-stacked chart) gets its own
+  // topmost-segment calculation. Charts with a single stack just end up
+  // with one group and behave identically to before.
+  const stackGroups = new Map<string, typeof allBars>();
+  for (const item of allBars) {
+    const key = (item.ds as { stack?: string }).stack ?? '__default__';
+    if (!stackGroups.has(key)) stackGroups.set(key, []);
+    stackGroups.get(key)!.push(item);
+  }
 
-    for (const { ds, i } of bars) {
-      const meta = chart.getDatasetMeta(i);
-      const el = meta.data[col] as unknown as BarEl;
-      if (!el) continue;
+  const numPoints = allBars[0]?.ds?.data?.length ?? 0;
 
-      const value = Number(ds.data[col]);
-
-      // Restore draw if it was previously suppressed (data might have changed).
-      if (el[ORIG_DRAW]) {
-        el.draw = el[ORIG_DRAW];
-        delete el[ORIG_DRAW];
+  for (const bars of Array.from(stackGroups.values())) {
+    for (let col = 0; col < numPoints; col++) {
+      // Find the topmost non-zero bar dataset for this stack + column.
+      let topIndex = -1;
+      for (let k = bars.length - 1; k >= 0; k--) {
+        if (Number(bars[k].ds.data[col]) > 0) { topIndex = bars[k].i; break; }
       }
 
-      if (!el.options) continue;
+      for (const { ds, i } of bars) {
+        const meta = chart.getDatasetMeta(i);
+        const el = meta.data[col] as unknown as BarEl;
+        if (!el) continue;
 
-      if (i === topIndex) {
-        // Clone options — during non-hover render all elements in a dataset
-        // share the SAME resolved-options reference. Without cloning, setting
-        // borderRadius here would be overwritten when the next column's
-        // element (same dataset, not topmost) sets borderRadius = 0.
-        el.options = Object.assign({}, el.options);
-        el.options.borderRadius = horizontal
-          ? { topLeft: 0, topRight: r, bottomLeft: 0, bottomRight: r }
-          : { topLeft: r, topRight: r, bottomLeft: 0, bottomRight: 0 };
-        el.options.borderSkipped = false;
-      } else {
-        el.options.borderRadius = 0;
-        el.options.borderSkipped = false;
+        const value = Number(ds.data[col]);
 
-        // 0-value elements above the topmost segment: replace draw() with
-        // a no-op so Chart.js never paints them. This avoids the hairline
-        // artifact from canvas anti-aliasing on a degenerate fill path,
-        // without touching shared resolved-options like backgroundColor.
-        if (value === 0) {
-          el[ORIG_DRAW] = el.draw;
-          el.draw = () => {};
+        // Restore draw if it was previously suppressed (data might have changed).
+        if (el[ORIG_DRAW]) {
+          el.draw = el[ORIG_DRAW];
+          delete el[ORIG_DRAW];
+        }
+
+        if (!el.options) continue;
+
+        if (i === topIndex) {
+          // Clone options — during non-hover render all elements in a dataset
+          // share the SAME resolved-options reference. Without cloning, setting
+          // borderRadius here would be overwritten when the next column's
+          // element (same dataset, not topmost) sets borderRadius = 0.
+          el.options = Object.assign({}, el.options);
+          el.options.borderRadius = horizontal
+            ? { topLeft: 0, topRight: r, bottomLeft: 0, bottomRight: r }
+            : { topLeft: r, topRight: r, bottomLeft: 0, bottomRight: 0 };
+          el.options.borderSkipped = false;
+        } else {
+          el.options.borderRadius = 0;
+          el.options.borderSkipped = false;
+
+          // 0-value elements above the topmost segment: replace draw() with
+          // a no-op so Chart.js never paints them. This avoids the hairline
+          // artifact from canvas anti-aliasing on a degenerate fill path,
+          // without touching shared resolved-options like backgroundColor.
+          if (value === 0) {
+            el[ORIG_DRAW] = el.draw;
+            el.draw = (_ctx: CanvasRenderingContext2D) => {};
+          }
         }
       }
     }

@@ -13,7 +13,7 @@ import { rstoNeutral, rstoOrange } from '../../theme/tokens';
 const TooltipIconButton = styled(IconButton)<IconButtonProps & { variant?: 'default' | 'insight' }>(
     ({ theme, variant = 'default' }) => ({
         padding: '4px',
-        color: variant === 'insight' ? theme.palette.rstoBlue._70 : rstoNeutral.sand,
+        color: variant === 'insight' ? theme.palette.rstoBlue._70 : rstoNeutral.shadow,
         '&:hover': {
             backgroundColor: 'transparent',
             color: variant === 'insight' ? theme.palette.rstoBlue._70 : rstoOrange._50,
@@ -46,8 +46,8 @@ const RstoTooltip = ({ content, icon, variant = 'default', placement = 'right-st
                             // offset: [skidding, distance]
                             // skidding=4 nudges tooltip down to align with the icon image
                             // (compensates for the 4px top padding on TooltipIconButton)
-                            // distance=4 gives a tight spacing(0.5) gap
-                            { name: 'offset',          options: { offset: [4, 4] } },
+                            // distance=-4 pulls the tooltip flush with the icon edge (cancels button padding)
+                            { name: 'offset',          options: { offset: [4, -4] } },
                             { name: 'flip',            options: { fallbackPlacements: ['right-start', 'left-start'] } },
                             { name: 'preventOverflow', options: { padding: 8 } },
                         ],
@@ -80,6 +80,8 @@ const RstoTooltip = ({ content, icon, variant = 'default', placement = 'right-st
                         disableRipple
                         onClick={() => setOpen((o) => !o)}
                         variant={variant}
+                        aria-label={open ? 'Close information tooltip' : 'Open information tooltip'}
+                        aria-expanded={open}
                     >
                         {icon ?? (
                             <InfoOutlinedIcon

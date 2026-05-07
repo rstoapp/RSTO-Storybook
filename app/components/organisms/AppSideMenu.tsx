@@ -14,6 +14,8 @@ import {
     Tab,
     Tabs,
     Typography,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
@@ -26,6 +28,13 @@ import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRigh
 import KeyboardDoubleArrowLeftRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowLeftRounded';
 import KeyboardDoubleArrowRightRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowRightRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
+import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
+import ApartmentOutlinedIcon from '@mui/icons-material/ApartmentOutlined';
+import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
+import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
+import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
+import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -47,6 +56,27 @@ export type RstoNavChildItem = RstoNavLeaf | RstoNavSubGroup;
 
 const isSubGroup = (item: RstoNavChildItem): item is RstoNavSubGroup =>
     'children' in item && Array.isArray((item as RstoNavSubGroup).children);
+
+// ─── Variant colour schemes ───────────────────────────────────────────────────
+
+export type SideNavVariant = 'service-provider' | 'community' | 'hub';
+
+type NavColorScheme = {
+    activeBg: string;
+    activeBorder: string;
+    activeText: string;
+};
+
+const variantSchemes: Record<SideNavVariant, NavColorScheme> = {
+    'service-provider': { activeBg: '#FEF7EF', activeBorder: '#F28B2D', activeText: '#F28B2D' },
+    community:          { activeBg: '#EEF8F4', activeBorder: '#0F6E56', activeText: '#0F6E56' },
+    hub:                { activeBg: '#FEF7EF', activeBorder: '#C06A12', activeText: '#C06A12' },
+};
+
+// Default scheme matches the existing orange theme
+const defaultColorScheme: NavColorScheme = { activeBg: '#FDF1E2', activeBorder: '#A34E16', activeText: '#A34E16' };
+
+const NavColorContext = React.createContext<NavColorScheme>(defaultColorScheme);
 
 // ─── Strategy index types (for embedding the INDEX panel inside the nav) ──────
 
@@ -80,6 +110,11 @@ const ENV_CONFIG: Record<Exclude<Environment, 'production'>, { label: string; co
 };
 
 export type AppSideMenuProps = {
+    /** When set, uses preset nav items and colour scheme for the given user type. */
+    variant?: SideNavVariant;
+    orgName?: string;
+    userName?: string;
+    userEmail?: string;
     brandName?: string;
     activeItemId?: string;
     onItemSelect?: (itemId: string) => void;
@@ -142,6 +177,46 @@ const defaultUtilityItems: RstoNavItem[] = [
     },
 ];
 
+// ─── Variant preset nav items ─────────────────────────────────────────────────
+
+const variantNavItems: Record<SideNavVariant, RstoNavItem[]> = {
+    'service-provider': [
+        { id: 'dashboard', label: 'Data',      icon: <BarChartOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'upload',    label: 'Upload',    icon: <FileUploadOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'plan',      label: 'Plan',      icon: <GridViewOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'resources', label: 'Resources', icon: <MenuBookOutlinedIcon sx={{ fontSize: 16 }} /> },
+    ],
+    community: [
+        { id: 'dashboard',         label: 'Dashboard',         icon: <DashboardOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'service-providers', label: 'Service Providers', icon: <ApartmentOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'ci-planning',       label: 'CI Planning',       icon: <AutorenewOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'resources',         label: 'Resources',         icon: <MenuBookOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'calendar',          label: 'Calendar',          icon: <CalendarTodayOutlinedIcon sx={{ fontSize: 16 }} /> },
+    ],
+    hub: [
+        { id: 'dashboard', label: 'Dashboard', icon: <DashboardOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'directory', label: 'Directory', icon: <FolderOpenOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'upload',    label: 'Upload',    icon: <FileUploadOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'plan',      label: 'Plan',      icon: <AutorenewOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'resources', label: 'Resources', icon: <MenuBookOutlinedIcon sx={{ fontSize: 16 }} /> },
+    ],
+};
+
+const variantUtilityItems: Record<SideNavVariant, RstoNavItem[]> = {
+    'service-provider': [
+        { id: 'feedback', label: 'Feedback', icon: <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'settings', label: 'Settings', icon: <SettingsOutlinedIcon sx={{ fontSize: 16 }} /> },
+    ],
+    community: [
+        { id: 'feedback', label: 'Feedback', icon: <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'settings', label: 'Settings', icon: <SettingsOutlinedIcon sx={{ fontSize: 16 }} /> },
+    ],
+    hub: [
+        { id: 'feedback', label: 'Feedback', icon: <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'settings', label: 'Settings', icon: <SettingsOutlinedIcon sx={{ fontSize: 16 }} /> },
+    ],
+};
+
 // ─── Level-3 leaf: page link inside a sub-group ───────────────────────────────
 
 // ─── Sub-nav item — renders code + label (indicator style) or label only ─────
@@ -154,7 +229,9 @@ const SubNavItem = ({
     item: RstoNavLeaf;
     selected: boolean;
     onClick: () => void;
-}) => (
+}) => {
+    const scheme = React.useContext(NavColorContext);
+    return (
     <ListItemButton
         onClick={onClick}
         selected={selected}
@@ -167,9 +244,9 @@ const SubNavItem = ({
             mb: 0.25,
             alignItems: item.code ? 'flex-start' : 'center',
             '&.Mui-selected': {
-                backgroundColor: 'rstoOrange._10',
+                backgroundColor: scheme.activeBg,
             },
-            '&.Mui-selected:hover': { backgroundColor: 'rstoOrange._10' },
+            '&.Mui-selected:hover': { backgroundColor: scheme.activeBg },
             '&:hover': { backgroundColor: 'rstoGray._40' },
         }}
     >
@@ -178,7 +255,7 @@ const SubNavItem = ({
                 <Typography sx={{
                     fontSize: 10,
                     fontWeight: 700,
-                    color: 'rstoOrange._70',
+                    color: scheme.activeText,
                     lineHeight: 1.3,
                     letterSpacing: 0.4,
                     textTransform: 'uppercase',
@@ -213,7 +290,7 @@ const SubNavItem = ({
                             height: 18,
                             minWidth: 18,
                             '& .MuiChip-label': { px: 0.6, fontSize: 10, fontWeight: 700 },
-                            bgcolor: 'rstoOrange._70',
+                            bgcolor: scheme.activeBorder,
                             color: 'rstoGray.white',
                             borderRadius: '10px',
                         }}
@@ -222,7 +299,8 @@ const SubNavItem = ({
             </>
         )}
     </ListItemButton>
-);
+    );
+};
 
 // ─── Sub-group header (Quality / Quantity / Participation) ────────────────────
 
@@ -433,7 +511,9 @@ const TopLevelRow = ({
     selected: boolean;
     open?: boolean;
     onClick: () => void;
-}) => (
+}) => {
+    const scheme = React.useContext(NavColorContext);
+    return (
     <ListItemButton
         onClick={onClick}
         selected={selected}
@@ -445,7 +525,7 @@ const TopLevelRow = ({
             mb: 0.25,
             position: 'relative',
             '&.Mui-selected': {
-                backgroundColor: 'rstoOrange._10',
+                backgroundColor: scheme.activeBg,
             },
             '&.Mui-selected::before': {
                 content: '""',
@@ -456,13 +536,13 @@ const TopLevelRow = ({
                 width: 3,
                 height: 16,
                 borderRadius: '0 2px 2px 0',
-                backgroundColor: 'rstoOrange._70',
+                backgroundColor: scheme.activeBorder,
             },
-            '&.Mui-selected:hover': { backgroundColor: 'rstoOrange._10' },
+            '&.Mui-selected:hover': { backgroundColor: scheme.activeBg },
             '&:hover': { backgroundColor: 'rstoGray._40' },
         }}
     >
-        <ListItemIcon sx={{ minWidth: 24, color: selected ? 'rstoOrange._70' : 'rstoGray._90' }}>
+        <ListItemIcon sx={{ minWidth: 24, color: selected ? scheme.activeText : 'rstoGray._90' }}>
             {item.icon}
         </ListItemIcon>
         <ListItemText
@@ -470,16 +550,17 @@ const TopLevelRow = ({
             primaryTypographyProps={{
                 fontSize: 14,
                 fontWeight: selected ? 500 : 400,
-                color: selected ? 'rstoOrange._70' : 'rstoGray.black',
+                color: selected ? scheme.activeText : 'rstoGray.black',
             }}
         />
         {(item.children || item.strategyGroups) && (
             open
-                ? <KeyboardArrowDownRoundedIcon sx={{ color: selected ? 'rstoOrange._70' : 'rstoGray._80', fontSize: 16 }} />
-                : <KeyboardArrowRightRoundedIcon sx={{ color: selected ? 'rstoOrange._70' : 'rstoGray._80', fontSize: 16 }} />
+                ? <KeyboardArrowDownRoundedIcon sx={{ color: selected ? scheme.activeText : 'rstoGray._80', fontSize: 16 }} />
+                : <KeyboardArrowRightRoundedIcon sx={{ color: selected ? scheme.activeText : 'rstoGray._80', fontSize: 16 }} />
         )}
     </ListItemButton>
-);
+    );
+};
 
 // ─── Nav group ────────────────────────────────────────────────────────────────
 
@@ -545,19 +626,34 @@ const NavGroup = ({
 // ─── Main component ───────────────────────────────────────────────────────────
 
 const AppSideMenu = ({
+    variant,
+    orgName,
+    userName,
+    userEmail,
     brandName = 'RSTO',
     activeItemId = 'quantity-1',
     onItemSelect,
     onLogout,
     defaultOpenIds = ['dashboard', 'quantity'],
-    navItems = defaultNavItems,
-    utilityItems = defaultUtilityItems,
+    navItems,
+    utilityItems,
     environment,
 }: AppSideMenuProps) => {
-    const safeNavItems = Array.isArray(navItems) ? navItems : [];
-    const safeUtilityItems = Array.isArray(utilityItems) ? utilityItems : [];
+    const scheme = variant ? variantSchemes[variant] : defaultColorScheme;
+    const resolvedNavItems = navItems ?? (variant ? variantNavItems[variant] : defaultNavItems);
+    const resolvedUtilityItems = utilityItems ?? (variant ? variantUtilityItems[variant] : defaultUtilityItems);
+    const logoutLabel = variant === 'community' ? 'Sign out' : 'Log out';
+    const safeNavItems = Array.isArray(resolvedNavItems) ? resolvedNavItems : [];
+    const safeUtilityItems = Array.isArray(resolvedUtilityItems) ? resolvedUtilityItems : [];
 
-    const [collapsed, setCollapsed] = React.useState(false);
+    const theme = useTheme();
+    // Auto-collapse below md (900px). User can still expand/collapse manually.
+    const isBelowMd = useMediaQuery(theme.breakpoints.down('md'));
+    const [userCollapsed, setUserCollapsed] = React.useState<boolean | null>(null);
+    const collapsed = userCollapsed !== null ? userCollapsed : isBelowMd;
+
+    // Reset user override when crossing the md breakpoint
+    React.useEffect(() => { setUserCollapsed(null); }, [isBelowMd]);
     const [selectedId, setSelectedId] = React.useState(activeItemId);
     const [openIds, setOpenIds] = React.useState<Record<string, boolean>>(() => {
         const init: Record<string, boolean> = {};
@@ -608,7 +704,7 @@ const AppSideMenu = ({
                     py: 0.75,
                     mb: 0.25,
                     position: 'relative',
-                    '&.Mui-selected': { backgroundColor: 'rstoOrange._10' },
+                    '&.Mui-selected': { backgroundColor: scheme.activeBg },
                     '&.Mui-selected::before': {
                         content: '""',
                         position: 'absolute',
@@ -618,13 +714,13 @@ const AppSideMenu = ({
                         width: 3,
                         height: 16,
                         borderRadius: '0 2px 2px 0',
-                        backgroundColor: 'rstoOrange._70',
+                        backgroundColor: scheme.activeBorder,
                     },
-                    '&.Mui-selected:hover': { backgroundColor: 'rstoOrange._10' },
+                    '&.Mui-selected:hover': { backgroundColor: scheme.activeBg },
                     '&:hover': { backgroundColor: 'rstoGray._40' },
                 }}
             >
-                <Box sx={{ color: active ? 'rstoOrange._70' : 'rstoGray._90', display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ color: active ? scheme.activeText : 'rstoGray._90', display: 'flex', alignItems: 'center' }}>
                     {item.icon}
                 </Box>
             </ListItemButton>
@@ -679,6 +775,7 @@ const AppSideMenu = ({
 
     if (collapsed) {
         return (
+            <NavColorContext.Provider value={scheme}>
             <Paper
                 elevation={0}
                 square
@@ -731,7 +828,7 @@ const AppSideMenu = ({
                         </>
                     )}
                     <ListItemButton
-                        onClick={() => setCollapsed(false)}
+                        onClick={() => setUserCollapsed(false)}
                         sx={{
                             borderRadius: '8px',
                             minHeight: 44,
@@ -745,10 +842,12 @@ const AppSideMenu = ({
                     </ListItemButton>
                 </Box>
             </Paper>
+            </NavColorContext.Provider>
         );
     }
 
     return (
+        <NavColorContext.Provider value={scheme}>
         <Paper
             elevation={0}
             square
@@ -768,11 +867,29 @@ const AppSideMenu = ({
             }}
         >
             <Box sx={{ px: 1.5, pt: 0, pb: 0, mb: 3.5 }}>
-                <img
-                    src="/rsto_logomark_fullcolour.svg"
-                    alt={brandName}
-                    style={{ width: 'auto', height: 64, display: 'block' }}
-                />
+                {orgName ? (
+                    <Box>
+                        <Typography sx={{ fontSize: 13, fontWeight: 600, color: 'text.primary', lineHeight: 1.3 }}>
+                            {orgName}
+                        </Typography>
+                        {userName && (
+                            <Typography sx={{ fontSize: 12, color: 'text.secondary', mt: '2px' }}>
+                                {userName}
+                            </Typography>
+                        )}
+                        {userEmail && (
+                            <Typography sx={{ fontSize: 11, color: 'text.disabled', mt: '1px', wordBreak: 'break-word' }}>
+                                {userEmail}
+                            </Typography>
+                        )}
+                    </Box>
+                ) : (
+                    <img
+                        src="/rsto_logomark_fullcolour.svg"
+                        alt={brandName}
+                        style={{ width: 'auto', height: 64, display: 'block' }}
+                    />
+                )}
             </Box>
 
             <List disablePadding>{safeNavItems.map(renderItem)}</List>
@@ -800,7 +917,7 @@ const AppSideMenu = ({
                                 <LogoutRoundedIcon sx={{ fontSize: 16 }} />
                             </ListItemIcon>
                             <ListItemText
-                                primary="Log out"
+                                primary={logoutLabel}
                                 primaryTypographyProps={{
                                     fontSize: 14,
                                     fontWeight: 400,
@@ -820,7 +937,7 @@ const AppSideMenu = ({
                     />
                 )}
                 <ListItemButton
-                    onClick={() => setCollapsed(true)}
+                    onClick={() => setUserCollapsed(true)}
                     sx={{
                         borderRadius: '8px',
                         minHeight: 44,
@@ -844,6 +961,7 @@ const AppSideMenu = ({
                 </ListItemButton>
             </Box>
         </Paper>
+        </NavColorContext.Provider>
     );
 };
 

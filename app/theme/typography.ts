@@ -56,7 +56,7 @@ export const typography: ThemeOptions['typography'] = {
     button: {
         fontSize: '0.875rem',
         lineHeight: '1.25rem',
-        letterSpacing: '0.04em',
+        letterSpacing: 0,
         textTransform: 'none',
         fontWeight: 600,
     },
@@ -73,3 +73,18 @@ export const typography: ThemeOptions['typography'] = {
         fontWeight: 600,
     },
 };
+
+// ── Eyebrow style ─────────────────────────────────────────────────────────────
+// Not a MUI variant — used via sx prop. Same size as overline but:
+//   - NOT uppercase
+//   - tighter letter-spacing (0.03em vs 0.08em)
+//   - tighter line-height (1 vs 1.45)
+// Usage: <Typography sx={eyebrowSx}>ANC - Routine Care</Typography>
+export const eyebrowSx = {
+    fontFamily: fonts.body,
+    fontSize: '0.6875rem',   // 11px
+    fontWeight: 600,
+    lineHeight: 1,
+    letterSpacing: '0.03em',
+    textTransform: 'none',
+} as const;

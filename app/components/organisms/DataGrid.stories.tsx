@@ -2,28 +2,6 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Box, Chip } from '@mui/material';
 
-const meta: Meta<typeof DataGrid> = {
-    title: 'RSTO/Organisms/DataGrid',
-    component: DataGrid,
-    tags: ['autodocs'],
-    decorators: [
-        (Story) => (
-            <Box sx={{ width: '100%' }}>
-                <Story />
-            </Box>
-        ),
-    ],
-    args: {
-        rows,
-        columns,
-        autoHeight: true,
-        disableRowSelectionOnClick: true,
-    },
-};
-
-export default meta;
-type Story = StoryObj<typeof DataGrid>;
-
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'provider', headerName: 'Provider', flex: 1, minWidth: 200 },
@@ -34,7 +12,7 @@ const columns: GridColDef[] = [
         headerName: 'Completion Rate',
         width: 150,
         type: 'number',
-        valueFormatter: (value: number) => `${value}%`,
+        valueFormatter: ({ value }: { value: number }) => `${value}%`,
     },
     {
         field: 'status',
@@ -62,6 +40,28 @@ const rows = [
     { id: 9, provider: 'Western Communities', serviceType: 'Early Intervention', cases: 132, completionRate: 81, status: 'Active' },
     { id: 10, provider: 'Northside Foster Care', serviceType: 'Out-of-Home Care', cases: 58, completionRate: 89, status: 'Inactive' },
 ];
+
+const meta: Meta<typeof DataGrid> = {
+    title: 'RSTO/Organisms/DataGrid',
+    component: DataGrid,
+    tags: ['autodocs'],
+    decorators: [
+        (Story) => (
+            <Box sx={{ width: '100%' }}>
+                <Story />
+            </Box>
+        ),
+    ],
+    args: {
+        rows,
+        columns,
+        autoHeight: true,
+        disableRowSelectionOnClick: true,
+    },
+};
+
+export default meta;
+type Story = StoryObj<typeof DataGrid>;
 
 export const Default: Story = {};
 

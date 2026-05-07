@@ -7,27 +7,32 @@
 // ─── Neutral surface tokens ───────────────────────────────────────────────────
 
 export const P = {
-  paper:  '#FFFFFF',   // Card background
-  bone:   '#EEE8DF',   // Gridlines, tooltip background
-  sand:   '#E0D8CC',   // Card border, tooltip border
-  stone:  '#A0A49C',   // Reference lines, decorative (Stone 50)
-  shadow: '#8A7B6A',   // Axis ticks, legend text, filter labels (4.8:1 AA)
-  earth:  '#5C4F3A',   // Tooltip body, filter label text
-  bark:   '#3D3028',   // Card title — between earth and ink
-  ink:    '#2C2416',   // Tooltip title, filter values
-  o50:    '#F28B2D',   // RSTO brand orange — eyebrow label
+  paper:   '#FFFFFF',   // Card background
+  frost:   '#FAF8F4',   // Skeleton/loading background — barely-warm white
+  linen:   '#F7F3ED',   // Empty state background — warm off-white, lighter than bone
+  bone:    '#EEE8DF',   // Gridlines, tooltip background
+  sand:    '#E0D8CC',   // Card border, tooltip border
+  stone:   '#A0A49C',   // Reference lines, decorative (Stone 50)
+  shadow:  '#8A7B6A',   // Axis ticks, legend text, filter labels (4.8:1 AA)
+  earth:   '#5C4F3A',   // Tooltip body, filter label text
+  bark:    '#3D3028',   // Card title — between earth and ink
+  ink:     '#2C2416',   // Tooltip title, filter values
+  o50:     '#C06010',   // RSTO brand orange — large UI elements (4.26:1, decorative)
+  eyebrow: '#9A4D0A',   // Eyebrow label + icon — #9A4D0A passes AA 4.5:1 on white at 11px
 } as const;
 
 export type PaletteKey = keyof typeof P;
 
 // ─── Stacked bar series (BarChart, WeeklyAttendanceChart) ─────────────────────
-// stack[0] = bottom/dominant → stack[3] = top/smallest
+// stack[0] = bottom/dominant → stack[4] = top/smallest
+// Cool → warm direction: cooler = positive, warmer = concern.
 
 export const STACK_COLORS = [
-  '#567A6E',  // Sage 60 — stack.1
-  '#80A89C',  // Sage 40 — stack.2
-  '#8BBFCC',  // Blue 38 — stack.3
-  '#5A9EAF',  // Blue 55 — stack.4
+  '#3A5E52',  // Deep sage (Sage 70) — stack.1
+  '#567A6E',  // Mid sage  (Sage 60) — stack.2
+  '#4A8EA8',  // Teal-blue (Blue 55) — stack.3
+  '#C07840',  // Burnt clay (Amber 55) — stack.4
+  '#8C3A18',  // Deep rust (Amber 75) — stack.5
 ] as const;
 
 // ─── Multi-series palette (LineChart, MultiLineChart) ────────────────────────
@@ -55,14 +60,14 @@ export const SERIES_NAMES = [
 // Use when colour carries meaning. Apply consistently across all views.
 //
 // RAG progression: On track → Neutral → Caution → Needs attention
-//                  Sage 40    Blue 55   Amber 55  Amber 75
+//                  Deep sage  Teal-blue  Burnt clay  Deep rust
 
 export const SEMANTIC = {
-  positive:  '#80A89C',  // Sage 40  — On track / above threshold
-  neutral:   '#5A9EAF',  // Blue 55  — Neutral / right direction
-  caution:   '#D4844A',  // Amber 55 — Caution / below threshold
-  attention: '#8F4E2A',  // Amber 75 — Needs attention / critical
-  reference: '#A0A49C',  // Stone 50 — Reference / total lines
+  positive:  '#3A5E52',  // Deep sage  — On track / above threshold
+  neutral:   '#4A8EA8',  // Teal-blue  — Neutral / right direction
+  caution:   '#C07840',  // Burnt clay — Caution / below threshold
+  attention: '#8C3A18',  // Deep rust  — Needs attention / critical
+  reference: '#A0A49C',  // Stone 50   — Reference / total lines
 } as const;
 
 export const SEMANTIC_LABELS = {
@@ -81,11 +86,11 @@ export const HEATMAP_COLORS = [
   '#3D6860',  // Sage 70 — 25–<30 hrs
   '#567A6E',  // Sage 60 — 15–<25 hrs
   '#80A89C',  // Sage 40 — 13–<15 hrs
-  '#8BBFCC',  // Blue 38 — 10–<13 hrs
-  '#B8D8E2',  // Blue 22 — 8–<10 hrs
+  '#A0C4BA',  // Sage 28 — 10–<13 hrs
+  '#CAD8D0',  // Sage 18 — 8–<10 hrs
   '#E8B48A',  // Amber 35 — 6–<8 hrs
-  '#D4844A',  // Amber 55 — 4–<6 hrs
-  '#B06230',  // Amber 65 — <4 hrs
+  '#C07840',  // Amber 55 — 4–<6 hrs
+  '#8C3A18',  // Deep rust — <4 hrs
   '#A0A49C',  // Stone 50 — Did not attend (always at 55% opacity)
 ] as const;
 

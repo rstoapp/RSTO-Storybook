@@ -12,8 +12,13 @@ import * as React from 'react';
 
 import InsightCard from '../molecules/InsightCard';
 import RstoChip from '../molecules/RstoChip';
-import ChartCard from '../organisms/charts/ChartCard';
-import LineChart from '../organisms/charts/LineChart';
+import HeadingWithChips from '../molecules/HeadingWithChips';
+import ChartCard, { FilterChip } from '../organisms/charts/ChartCard';
+import MultiLineChart, { mkMultiLineMuted, MultiLineSeries } from '../organisms/charts/MultiLineChart';
+import WeeklyAttendanceChart, { mkAttendanceDatasets } from '../organisms/charts/WeeklyAttendanceChart';
+import { makeScales, makeLegend, makeTooltip, makeTotalLineDataset, BASE_OPTIONS } from '../organisms/charts/default-chart-options';
+import { STACKED_TOP_RADIUS } from '../organisms/charts/stacked-top-radius-plugin';
+import { P } from '../organisms/charts/chart-theme';
 import AppSideMenu, { RstoNavItem } from '../organisms/AppSideMenu';
 
 // ── Nav items ────────────────────────────────────────────────────────────────
@@ -47,39 +52,99 @@ const NAV_ITEMS: RstoNavItem[] = [
 
 // ── Chart data ──────────────────────────────────────────────────────────────
 
-const months = ['Jan 23', 'Feb 23', 'Mar 23', 'Apr 23', 'May 23', 'Jun 23', 'Jul 23', 'Aug 23', 'Sep 23', 'Oct 23', 'Nov 23', 'Dec 23', 'Jan 24'];
+const months = [
+    'Jan 25', 'Feb 25', 'Mar 25', 'Apr 25', 'May 25', 'Jun 25',
+    'Jul 25', 'Aug 25', 'Sep 25', 'Oct 25', 'Nov 25', 'Dec 25', 'Jan 26',
+];
 
-const COMMUNITY_COLOURS = {
-    carlton: '#F28B2D',
-    docklands: '#F6AE6C',
-    harbour: '#191919',
-    broadmeadows: '#4CAAC1',
-    clareCourt: '#0B651E',
+const CENTRES_LEAD: MultiLineSeries[] = [
+    { name: 'Gowrie at The Harbour',                data: [55, 58, 62, 60, 57, 53, 50, 54, 58, 55, 52, 48, 38] },
+    { name: 'Gowrie Broadmeadows',                  data: [40, 44, 52, 50, 55, 54, 50, 56, 60, 58, 53, 48, 45] },
+    { name: 'Gowrie Carlton Learning Precinct',     data: [50, 54, 80, 74, 78, 73, 60, 83, 78, 76, 72, 68, 56] },
+    { name: 'Gowrie Carlton North',                 data: [57, 60, 88, 82, 86, 80, 68, 90, 86, 83, 79, 74, 62] },
+    { name: 'Gowrie Docklands Kindergarten',        data: [44, 56, 68, 66, 70, 63, 54, 68, 70, 63, 58, 53, 48] },
+    { name: 'Gowrie Marshalltown Rd Kindergarten',  data: [38, 42, 48, 46, 50, 48, 44, 52, 56, 54, 50, 45, 40] },
+    { name: 'Gowrie Minindee Rd Kindergarten',      data: [32, 36, 40, 42, 46, 44, 40, 48, 52, 50, 46, 42, 36] },
+    { name: 'Gowrie Oberon Kindergarten',           data: [46, 50, 58, 55, 60, 58, 52, 62, 66, 63, 58, 53, 46] },
+    { name: 'Gowrie- Clare Court',                  data: [25, 30, 20, 40, 45, 54, 50, 54, 57, 54, 49, 44, 40] },
+];
+
+// ── Weekly attendance chart data ─────────────────────────────────────────────
+// 27 weeks: 28 Jul 2025 → 26 Jan 2026
+
+const GOWRIE_WEEKS = [
+    '28 Jul', '4 Aug',  '11 Aug', '18 Aug', '25 Aug',
+    '1 Sep',  '8 Sep',  '15 Sep', '22 Sep', '29 Sep',
+    '6 Oct',  '13 Oct', '20 Oct', '27 Oct',
+    '3 Nov',  '10 Nov', '17 Nov', '24 Nov',
+    '1 Dec',  '8 Dec',  '15 Dec', '22 Dec', '29 Dec',
+    '5 Jan',  '12 Jan', '19 Jan', '26 Jan',
+];
+
+// Scale factor per week: 1.0 = full term enrolment (~870 children), drops for Christmas
+const WEEK_SCALE = [
+    1.00, 1.01, 1.00, 0.99, 1.00,   // Jul–Aug
+    1.02, 1.01, 0.99, 1.00, 1.01,   // Sep
+    1.00, 1.01, 1.00, 1.00, 0.99,   // Oct–Nov
+    1.00, 1.01, 0.99,                // Nov
+    0.19, 0.18, 0.16, 0.21, 0.01,   // Dec (Christmas closure)
+    0.38, 0.40, 0.41, 0.70,         // Jan (gradual return)
+];
+
+// Base children per attendance band at full enrolment (bottom → top)
+// 30+  25–30  15–25  13–15  10–13  8–10  6–8  4–6  <4  Did not attend
+const BASE_BANDS = [200, 140, 175, 96, 78, 61, 43, 26, 17, 33];
+
+const GOWRIE_ATTENDANCE: number[][] = BASE_BANDS.map((base) =>
+    WEEK_SCALE.map((scale) => Math.round(base * scale)),
+);
+
+const GOWRIE_ENROLLED = GOWRIE_ATTENDANCE.reduce(
+    (totals, series) => totals.map((t, i) => t + series[i]),
+    new Array(GOWRIE_WEEKS.length).fill(0) as number[],
+);
+
+const attendanceOptions = {
+    ...BASE_OPTIONS,
+    _stackedTopRadius: STACKED_TOP_RADIUS,
+    plugins: { legend: makeLegend(), tooltip: makeTooltip() },
+    scales: makeScales({ stacked: true, rotateX: true }),
+};
+
+const attendanceChartData = {
+    labels: GOWRIE_WEEKS,
+    datasets: [
+        ...mkAttendanceDatasets(GOWRIE_ATTENDANCE),
+        makeTotalLineDataset('Total number of children', GOWRIE_ENROLLED),
+    ],
+};
+
+const TARGET_LINE = {
+    label: 'Target 100%',
+    data: Array(13).fill(100),
+    borderColor: P.stone,
+    backgroundColor: 'transparent',
+    borderDash: [6, 4] as number[],
+    borderWidth: 1.5,
+    pointRadius: 0,
+    pointHoverRadius: 0,
+};
+
+const lineOptions = {
+    ...BASE_OPTIONS,
+    plugins: {
+        legend: makeLegend(),
+        tooltip: { ...makeTooltip(), mode: 'index' as const, intersect: false },
+    },
+    scales: makeScales({ yMin: 0, yMax: 100, yStepSize: 25, yTickCallback: (v: number | string) => `${v}%` }),
 };
 
 const leadChartData = {
     labels: months,
-    datasets: [
-        { label: 'Gowrie Carlton Learning Precinct', data: [50, 55, 82, 75, 80, 75, 62, 85, 80, 78, 75, 72, 60], borderColor: COMMUNITY_COLOURS.carlton, backgroundColor: 'transparent' },
-        { label: 'Gowrie Docklands Kindegarten', data: [45, 58, 70, 68, 72, 65, 55, 70, 72, 65, 60, 55, 50], borderColor: COMMUNITY_COLOURS.docklands, backgroundColor: 'transparent' },
-        { label: 'Gowrie at The Harbour', data: [55, 60, 65, 58, 55, 50, 45, 50, 55, 50, 45, 40, 38], borderColor: COMMUNITY_COLOURS.harbour, backgroundColor: 'transparent' },
-        { label: 'Gowrie Broadmeadows', data: [40, 45, 55, 50, 58, 55, 50, 58, 62, 60, 55, 50, 48], borderColor: COMMUNITY_COLOURS.broadmeadows, backgroundColor: 'transparent' },
-        { label: 'Gowrie Clare Court', data: [25, 30, 20, 40, 45, 55, 50, 55, 58, 55, 50, 45, 42], borderColor: COMMUNITY_COLOURS.clareCourt, backgroundColor: 'transparent' },
-        { label: 'Target 100%', data: Array(13).fill(100), borderColor: '#F28B2D', backgroundColor: 'transparent', borderDash: [6, 4] },
-    ],
+    datasets: [...mkMultiLineMuted(CENTRES_LEAD), TARGET_LINE],
 };
 
-const lagChartData = {
-    labels: months,
-    datasets: [
-        { label: 'Gowrie Carlton Learning Precinct', data: [48, 52, 78, 72, 75, 70, 58, 80, 75, 72, 68, 65, 55], borderColor: COMMUNITY_COLOURS.carlton, backgroundColor: 'transparent' },
-        { label: 'Gowrie Docklands Kindegarten', data: [42, 55, 65, 62, 68, 60, 50, 65, 68, 60, 55, 50, 45], borderColor: COMMUNITY_COLOURS.docklands, backgroundColor: 'transparent' },
-        { label: 'Gowrie at The Harbour', data: [52, 56, 60, 54, 50, 45, 40, 45, 50, 45, 40, 35, 32], borderColor: COMMUNITY_COLOURS.harbour, backgroundColor: 'transparent' },
-        { label: 'Gowrie Broadmeadows', data: [38, 42, 50, 45, 54, 50, 45, 54, 58, 55, 50, 45, 42], borderColor: COMMUNITY_COLOURS.broadmeadows, backgroundColor: 'transparent' },
-        { label: 'Gowrie Clare Court', data: [22, 28, 15, 35, 40, 50, 45, 50, 52, 50, 45, 40, 38], borderColor: COMMUNITY_COLOURS.clareCourt, backgroundColor: 'transparent' },
-        { label: 'Target 100%', data: Array(13).fill(100), borderColor: '#F28B2D', backgroundColor: 'transparent', borderDash: [6, 4] },
-    ],
-};
+
 
 // ── Stat chip ────────────────────────────────────────────────────────────────
 
@@ -105,12 +170,7 @@ const StatChip = ({ icon, label, value, badge }: StatChipProps) => (
 
 // ── Legend row ────────────────────────────────────────────────────────────────
 
-const LegendDot = ({ color, label }: { color: string; label: string }) => (
-    <Stack direction="row" alignItems="center" spacing={0.5}>
-        <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: color }} />
-        <Typography variant="caption" color="text.secondary">{label}</Typography>
-    </Stack>
-);
+// Removed: LegendDot — MultiLineChart renders its own Chart.js legend via makeLegend()
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
@@ -126,40 +186,33 @@ const ServiceProviderPage = () => (
         {/* Main content */}
         <Box sx={{ flex: 1, p: 3, overflow: 'auto' }}>
             {/* Page header */}
-            <Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={1}>
-                <Box>
-                    <Typography variant="h1">
-                        GOWRIE VICTORIA
-                    </Typography>
-                    <Stack direction="row" alignItems="center" spacing={0.5} mt={0.5}>
-                        <LocationOnOutlinedIcon sx={{ fontSize: 14, color: 'text.secondary' }} />
-                        <Typography variant="body2" color="text.secondary">
-                            Metro Victoria · Early education and care
-                        </Typography>
-                    </Stack>
-                </Box>
+            <Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={3}>
+                <HeadingWithChips
+                    heading="Gowrie Victoria"
+                    chips={['Metro Victoria', 'Early Education & Care']}
+                />
                 <Stack direction="row" spacing={2} alignItems="center">
                     <Button
                         variant="outlined"
+                        color="secondary"
                         size="small"
                         startIcon={<FileDownloadOutlinedIcon sx={{ fontSize: 14 }} />}
-                        sx={{ borderColor: 'rstoGray._60', color: 'text.primary', textTransform: 'none', borderRadius: '8px', fontWeight: 400 }}
                     >
                         Export Report
                     </Button>
                     <Button
                         variant="outlined"
+                        color="secondary"
                         size="small"
                         startIcon={<CalendarTodayOutlinedIcon sx={{ fontSize: 14 }} />}
-                        sx={{ borderColor: 'rstoGray._60', color: 'text.primary', textTransform: 'none', borderRadius: '8px', fontWeight: 400 }}
                     >
-                        Q1 2026 ▾
+                        Q1 2026
                     </Button>
                 </Stack>
             </Stack>
 
             {/* Insight card */}
-            <Box mt={3} mb={3}>
+            <Box mb={3}>
                 <InsightCard
                     insightName="ANC Participation Snapshot"
                     description={
@@ -183,60 +236,34 @@ const ServiceProviderPage = () => (
 
             {/* Chart cards */}
             <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12}>
                     <ChartCard
-                        chartName="Chart One - Lead Indicator Projected On Track"
-                        title={
-                            <Stack>
-                                <Typography variant="body2">Percentage on track to attend 600+ hours amongst</Typography>
-                                <Stack direction="row" alignItems="center" spacing={0.5} flexWrap="wrap">
-                                    <Typography variant="body2" fontWeight={600}>active children ▾</Typography>
-                                    <Typography variant="body2">at</Typography>
-                                    <Typography variant="body2" fontWeight={600}>Broadmeadows ▾</Typography>
-                                    <Typography variant="body2" fontWeight={600}>2 years before school ▾</Typography>
-                                </Stack>
-                            </Stack>
-                        }
+                        chartName="Chart One"
+                        title="Percentage on track to attend 600+ hours"
                         titleTooltip={{ content: { text: 'Projected percentage of children on track to meet the 600+ hour attendance target before school entry.' }, variant: 'default' }}
-                        subTitle="Jan 2025 - Jan 2026"
-                        chart={<LineChart aspectRatio={{ width: 16, height: 9 }} chartData={leadChartData} />}
-                        footer={
-                            <Stack direction="row" spacing={2} flexWrap="wrap" mt={1}>
-                                <LegendDot color={COMMUNITY_COLOURS.carlton} label="Gowrie Carlton Learning Precinct" />
-                                <LegendDot color={COMMUNITY_COLOURS.docklands} label="Gowrie Docklands Kindegarten" />
-                                <LegendDot color={COMMUNITY_COLOURS.harbour} label="Gowrie at The Harbour" />
-                                <LegendDot color={COMMUNITY_COLOURS.broadmeadows} label="Gowrie Broadmeadows" />
-                                <LegendDot color={COMMUNITY_COLOURS.clareCourt} label="Gowrie Clare Court" />
+                        filters={
+                            <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                                <FilterChip label="Cohort" value="All children" />
+                                <FilterChip label="Site" value="All centres" />
+                                <FilterChip label="Stage" value="2 years before school" />
                             </Stack>
                         }
+                        chart={<MultiLineChart aspectRatio={{ width: 16, height: 9 }} data={leadChartData} options={lineOptions} />}
                     />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12}>
                     <ChartCard
-                        chartName="Chart Two - Lag Indicator Historical Achieved"
-                        title={
-                            <Stack>
-                                <Typography variant="body2">Percentage of children who actually received 600+ hours amongst</Typography>
-                                <Stack direction="row" alignItems="center" spacing={0.5} flexWrap="wrap">
-                                    <Typography variant="body2" fontWeight={600}>active children ▾</Typography>
-                                    <Typography variant="body2">at</Typography>
-                                    <Typography variant="body2" fontWeight={600}>Broadmeadows ▾</Typography>
-                                    <Typography variant="body2" fontWeight={600}>2 years before school ▾</Typography>
-                                </Stack>
+                        chartName="Chart Two"
+                        title="Weekly attendance"
+                        titleTooltip={{ content: { text: 'Weekly distribution of children by attendance hours band across all selected centres and cohorts.' }, variant: 'default' }}
+                        filters={
+                            <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                                <FilterChip label="Children" value="All children" />
+                                <FilterChip label="Centre" value="All centres" />
+                                <FilterChip label="Who are" value="3, 4 & 5 year olds" />
                             </Stack>
                         }
-                        titleTooltip={{ content: { text: 'Historical percentage of children who actually achieved the 600+ hour attendance target.' }, variant: 'default' }}
-                        subTitle="Jan 2025 - Jan 2026"
-                        chart={<LineChart aspectRatio={{ width: 16, height: 9 }} chartData={lagChartData} />}
-                        footer={
-                            <Stack direction="row" spacing={2} flexWrap="wrap" mt={1}>
-                                <LegendDot color={COMMUNITY_COLOURS.carlton} label="Gowrie Carlton Learning Precinct" />
-                                <LegendDot color={COMMUNITY_COLOURS.docklands} label="Gowrie Docklands Kindegarten" />
-                                <LegendDot color={COMMUNITY_COLOURS.harbour} label="Gowrie at The Harbour" />
-                                <LegendDot color={COMMUNITY_COLOURS.broadmeadows} label="Gowrie Broadmeadows" />
-                                <LegendDot color={COMMUNITY_COLOURS.clareCourt} label="Gowrie Clare Court" />
-                            </Stack>
-                        }
+                        chart={<WeeklyAttendanceChart data={attendanceChartData} options={attendanceOptions} />}
                     />
                 </Grid>
             </Grid>

@@ -22,6 +22,18 @@ const preview: Preview = {
         a11y: {
             test: 'todo',
         },
+        backgrounds: {
+            default: 'warm',
+            values: [
+                { name: 'warm', value: '#FBF6EE' },
+                { name: 'white', value: '#FFFFFF' },
+            ],
+        },
+        docs: {
+            canvas: {
+                sourceState: 'none',
+            },
+        },
     },
 };
 

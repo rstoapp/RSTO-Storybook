@@ -5,6 +5,7 @@ import StackedBarChartIcon from '@mui/icons-material/StackedBarChart';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import RadarIcon from '@mui/icons-material/Radar';
 import GridOnIcon from '@mui/icons-material/GridOn';
+import DonutLargeIcon from '@mui/icons-material/DonutLarge';
 import { Menu, MenuItem } from '@mui/material';
 import ChartCard, { FilterChip } from './ChartCard';
 import BarChart from './BarChart';
@@ -13,6 +14,7 @@ import LineChart from './LineChart';
 import HorizontalBarChart from './HorizontalBarChart';
 import RadarChart from './RadarChart';
 import HeatmapChart from './HeatmapChart';
+import DoughnutChart from './DoughnutChart';
 import EmptyChartState from './EmptyChartState';
 import { P, STACK_COLORS, SERIES_COLORS, SEMANTIC, HEATMAP_COLORS, hexAlpha, CHART_FONT_FAMILY } from './chart-theme';
 import { makeScales, makeHorizontalScales, makeRadarScales, makeLegend, makeTooltip, makeTotalLineDataset, BASE_OPTIONS } from './default-chart-options';
@@ -67,16 +69,16 @@ const SERIES_DATA = [
 // Derived so the reference line always sits exactly at the top of each column.
 const TOTALS = SERIES_DATA[0].map((_, i) => SERIES_DATA.reduce((sum, row) => sum + row[i], 0));
 
-// Mixed palette — two cool (sage/blue) anchors + two warm (amber) tones.
-// Shows the full cool-to-warm diversity of the RSTO palette in a single chart.
+// Mixed palette — cool→warm using the first 4 STACK_COLORS steps in order.
+// Deep sage → mid sage → teal-blue → burnt clay.
 const MIXED_COLORS = [
-    STACK_COLORS[0],    // Sage 60  — cool anchor (bottom/dominant)
-    STACK_COLORS[3],    // Blue 55  — mid cool
-    SERIES_COLORS[4],   // Amber 55 — mid warm
-    SERIES_COLORS[3],   // Amber 75 — warm accent (top/smallest)
+    STACK_COLORS[0],    // Deep sage  — bottom/dominant
+    STACK_COLORS[1],    // Mid sage   — second
+    STACK_COLORS[2],    // Teal-blue  — third
+    STACK_COLORS[3],    // Burnt clay — top/smallest
 ] as const;
 
-const ICON_SX = { width: '14px', height: '14px', color: P.o50 };
+const ICON_SX = { width: '14px', height: '14px', color: P.eyebrow };
 
 // ── ECEC places data (real implementation reference) ──────────────────────────
 // Source: ACECQA (place counts) + ABS (total children). "Children without places"
@@ -126,7 +128,6 @@ export const WithBarChart: StoryObj = {
                             data: SERIES_DATA[i],
                             backgroundColor: hexAlpha(MIXED_COLORS[i], 0.88),
                             borderColor: MIXED_COLORS[i],
-                            borderWidth: 1,
                             stack: 'main',
                         })),
                     }}
@@ -173,25 +174,22 @@ export const WithBarChartAndTotalLine: StoryObj = {
                             {
                                 label: 'Gowrie VIC places',
                                 data: ECEC_GOWRIE,
-                                backgroundColor: hexAlpha(STACK_COLORS[1], 0.88),
-                                borderColor: STACK_COLORS[1],
-                                borderWidth: 1,
+                                backgroundColor: hexAlpha(STACK_COLORS[0], 0.88),
+                                borderColor: STACK_COLORS[0],
                                 stack: 'main',
                             },
                             {
                                 label: 'Other ECEC places',
                                 data: ECEC_OTHER,
-                                backgroundColor: hexAlpha(STACK_COLORS[3], 0.88),
-                                borderColor: STACK_COLORS[3],
-                                borderWidth: 1,
+                                backgroundColor: hexAlpha(STACK_COLORS[2], 0.88),
+                                borderColor: STACK_COLORS[2],
                                 stack: 'main',
                             },
                             {
                                 label: 'Children without places',
                                 data: ECEC_WITHOUT,
-                                backgroundColor: hexAlpha(SERIES_COLORS[4], 0.88),
-                                borderColor: SERIES_COLORS[4],
-                                borderWidth: 1,
+                                backgroundColor: hexAlpha(STACK_COLORS[3], 0.88),
+                                borderColor: STACK_COLORS[3],
                                 stack: 'main',
                             },
                             makeTotalLineDataset('Total number of children', ECEC_CHILDREN),
@@ -214,6 +212,130 @@ export const WithBarChartAndTotalLine: StoryObj = {
             }
         />
     ),
+};
+
+// ── Antenatal gestational-age data (grouped-stacked reference) ────────────────
+// Columns: Q4 2024, Q1 2025, Q2 2025, Q3 2025, Q4 2025
+// Rows: gestational age band at first booking (better → worse, cool → warm)
+const ANC_QUARTERS = ["Q4 '24", "Q1 '25", "Q2 '25", "Q3 '25", "Q4 '25"];
+const ANC_BAND_LABELS = [
+    'Attended before 12.6 weeks',
+    'Attended between 13.0\u201314.6 weeks',
+    'Attended between 15.0\u201316.6 weeks',
+    'Attended between 17.0\u201327.6 weeks',
+    'Attended at 28.0 weeks or above',
+];
+// Short labels used in the tooltip (keeps tooltip rows compact)
+const ANC_BAND_SHORT = [
+    'Before 12.6 wks',
+    '13.0\u201314.6 wks',
+    '15.0\u201316.6 wks',
+    '17.0\u201327.6 wks',
+    '28.0+ wks',
+];
+//              Q4'24  Q1'25  Q2'25  Q3'25  Q4'25
+const ANC_GP: number[][] = [
+    [3, 1, 5, 2, 3],   // before 12.6 wks
+    [2, 1, 3, 1, 2],   // 13.0-14.6 wks
+    [1, 0, 2, 1, 1],   // 15.0-16.6 wks
+    [1, 1, 1, 0, 1],   // 17.0-27.6 wks
+    [0, 0, 0, 1, 0],   // 28.0+ wks
+];  // GP-led totals:   7  3  11  5  7
+const ANC_MDHS: number[][] = [
+    [3, 1, 4, 2, 3],
+    [1, 1, 3, 1, 1],
+    [1, 0, 2, 1, 1],
+    [1, 1, 1, 1, 1],
+    [1, 0, 1, 0, 1],
+];  // MDHS-led totals: 7  3  11  5  7
+const ANC_TOTALS = [7, 3, 11, 5, 7]; // total per quarter (reference line — one group)
+
+export const WithGroupedStackedBarChart: StoryObj = {
+    name: 'ChartCard + BarChart (grouped stacked)',
+    decorators: [
+        (Story) => (
+            <div style={{ width: 900, padding: 24 }}>
+                <Story />
+            </div>
+        ),
+    ],
+    render: () => {
+        // 10 bar datasets: 5 bands × 2 delivery models (GP-led left, MDHS-led right)
+        // Each pair shares the same STACK_COLORS[i] colour so the legend only
+        // needs 5 entries. The filter callback below keeps only GP-led datasets
+        // (even indices) in the legend and strips the " \u00b7 GP" suffix.
+        const barDatasets = ANC_BAND_SHORT.flatMap((shortLabel, i) => [
+            {
+                label: `${shortLabel} \u00b7 GP`,
+                data: ANC_GP[i],
+                backgroundColor: hexAlpha(STACK_COLORS[i], 0.88),
+                borderColor: STACK_COLORS[i],
+                stack: 'gp',
+            },
+            {
+                label: `${shortLabel} \u00b7 MDHS`,
+                data: ANC_MDHS[i],
+                backgroundColor: hexAlpha(STACK_COLORS[i], 0.88),
+                borderColor: STACK_COLORS[i],
+                stack: 'mdhs',
+            },
+        ]);
+        const LINE_DS_INDEX = barDatasets.length; // 10 — the reference line
+
+        return (
+            <ChartCard
+                chartName="ANC · First Booking"
+                icon={<BarChartIcon sx={ICON_SX} />}
+                title={<>Number of pregnant women&nbsp;\u2022&nbsp;who attended their first antenatal appointment by gestational age</>}
+                titleTooltip={{
+                    content: {
+                        text: 'Stacked bars show the gestational age at first antenatal booking. Cooler colours = earlier (better) bookings; warmer colours = later (concerning). Left bar per quarter = GP-led, right bar = MDHS-led. Dashed line shows total women per quarter.',
+                    },
+                }}
+                filters={<>
+                    <FilterChip label="Site" value="All sites" />
+                    <FilterChip label="Period" value="Q4 2024 \u2013 Q4 2025" />
+                </>}
+                chart={
+                    <BarChart
+                        data={{
+                            labels: ANC_QUARTERS,
+                            datasets: [
+                                ...barDatasets,
+                                makeTotalLineDataset('Total number of women', ANC_TOTALS),
+                            ],
+                        }}
+                        options={{
+                            ...BASE_OPTIONS,
+                            _stackedTopRadius: STACKED_TOP_RADIUS,
+                            plugins: {
+                                legend: {
+                                    ...makeLegend(),
+                                    labels: {
+                                        ...(makeLegend() as { labels: object }).labels,
+                                        // Show only GP-led bands (even indices) + the reference line.
+                                        // Strip the " · GP" suffix so labels read as gestational age only.
+                                        filter: (item: { datasetIndex: number; text: string }) => {
+                                            if (item.datasetIndex === LINE_DS_INDEX) return true;
+                                            if (item.datasetIndex % 2 !== 0) return false;
+                                            item.text = item.text.replace(' \u00b7 GP', '');
+                                            return true;
+                                        },
+                                    } as any,
+                                } as ReturnType<typeof makeLegend>,
+                                tooltip: {
+                                    ...makeTooltip(),
+                                    // Hide 0-value items to keep the tooltip readable across 10+ datasets
+                                    filter: (item: { parsed: { y: number } }) => item.parsed.y > 0,
+                                },
+                            },
+                            scales: makeScales({ stacked: true }),
+                        } as Parameters<typeof BarChart>[0]['options']}
+                    />
+                }
+            />
+        );
+    },
 };
 
 export const WithBarChartGroup: StoryObj = {
@@ -239,9 +361,9 @@ export const WithBarChartGroup: StoryObj = {
                         data={{
                             labels: CATEGORIES,
                             datasets: [
-                                { label: 'Implemented to evidence', data: [4, 3, 5, 2, 4], backgroundColor: hexAlpha(SEMANTIC.positive, 0.88), borderColor: SEMANTIC.positive, borderWidth: 1, borderRadius: { topLeft: 4, topRight: 4 }, borderSkipped: 'bottom' as const },
-                                { label: 'Partially implemented',   data: [2, 3, 1, 3, 2], backgroundColor: hexAlpha(SEMANTIC.neutral, 0.88),   borderColor: SEMANTIC.neutral,   borderWidth: 1, borderRadius: { topLeft: 4, topRight: 4 }, borderSkipped: 'bottom' as const },
-                                { label: 'Not to evidence',         data: [1, 1, 1, 2, 1], backgroundColor: hexAlpha(SEMANTIC.caution, 0.88),   borderColor: SEMANTIC.caution,   borderWidth: 1, borderRadius: { topLeft: 4, topRight: 4 }, borderSkipped: 'bottom' as const },
+                                { label: 'Implemented to evidence', data: [4, 3, 5, 2, 4], backgroundColor: hexAlpha(SEMANTIC.positive, 0.88), borderColor: SEMANTIC.positive, borderRadius: { topLeft: 4, topRight: 4 }, borderSkipped: 'bottom' as const },
+                                { label: 'Partially implemented',   data: [2, 3, 1, 3, 2], backgroundColor: hexAlpha(SEMANTIC.neutral, 0.88),   borderColor: SEMANTIC.neutral,   borderRadius: { topLeft: 4, topRight: 4 }, borderSkipped: 'bottom' as const },
+                                { label: 'Not to evidence',         data: [1, 1, 1, 2, 1], backgroundColor: hexAlpha(SEMANTIC.caution, 0.88),   borderColor: SEMANTIC.caution,   borderRadius: { topLeft: 4, topRight: 4 }, borderSkipped: 'bottom' as const },
                             ],
                         }}
                         options={{
@@ -315,9 +437,9 @@ export const WithHorizontalBarChart: StoryObj = {
                         data={{
                             labels: COMPONENTS,
                             datasets: [
-                                { label: 'Implemented to evidence', data: [4, 3, 5, 2, 4, 3], backgroundColor: hexAlpha(SEMANTIC.positive, 0.88), borderColor: SEMANTIC.positive, borderWidth: 1, stack: 'main' },
-                                { label: 'Partially implemented',   data: [2, 2, 1, 3, 2, 2], backgroundColor: hexAlpha(SEMANTIC.caution, 0.88),   borderColor: SEMANTIC.caution,   borderWidth: 1, stack: 'main' },
-                                { label: 'Not to evidence',         data: [1, 1, 1, 2, 1, 2], backgroundColor: hexAlpha(SEMANTIC.attention, 0.88), borderColor: SEMANTIC.attention, borderWidth: 1, stack: 'main' },
+                                { label: 'Implemented to evidence', data: [4, 3, 5, 2, 4, 3], backgroundColor: hexAlpha(SEMANTIC.positive, 0.88), borderColor: SEMANTIC.positive, stack: 'main' },
+                                { label: 'Partially implemented',   data: [2, 2, 1, 3, 2, 2], backgroundColor: hexAlpha(SEMANTIC.caution, 0.88),   borderColor: SEMANTIC.caution,   stack: 'main' },
+                                { label: 'Not to evidence',         data: [1, 1, 1, 2, 1, 2], backgroundColor: hexAlpha(SEMANTIC.attention, 0.88), borderColor: SEMANTIC.attention, stack: 'main' },
                             ],
                         }}
                         options={{
@@ -504,10 +626,10 @@ export const WithFilterDropdown: StoryObj = {
                             data={{
                                 labels: COMPONENTS,
                                 datasets: [
-                                    { label: 'On track',              data: [4, 3, 5, 2, 4, 3], backgroundColor: hexAlpha(SEMANTIC.positive, 0.88),  borderColor: SEMANTIC.positive,  borderWidth: 1, stack: 'main' },
-                                    { label: 'Neutral / progressing', data: [2, 2, 1, 3, 2, 2], backgroundColor: hexAlpha(SEMANTIC.neutral, 0.88),   borderColor: SEMANTIC.neutral,   borderWidth: 1, stack: 'main' },
-                                    { label: 'Caution',               data: [1, 2, 1, 2, 1, 1], backgroundColor: hexAlpha(SEMANTIC.caution, 0.88),   borderColor: SEMANTIC.caution,   borderWidth: 1, stack: 'main' },
-                                    { label: 'Needs attention',       data: [1, 1, 1, 2, 1, 2], backgroundColor: hexAlpha(SEMANTIC.attention, 0.88), borderColor: SEMANTIC.attention, borderWidth: 1, stack: 'main' },
+                                    { label: 'On track',              data: [4, 3, 5, 2, 4, 3], backgroundColor: hexAlpha(SEMANTIC.positive, 0.88),  borderColor: SEMANTIC.positive,  stack: 'main' },
+                                    { label: 'Neutral / progressing', data: [2, 2, 1, 3, 2, 2], backgroundColor: hexAlpha(SEMANTIC.neutral, 0.88),   borderColor: SEMANTIC.neutral,   stack: 'main' },
+                                    { label: 'Caution',               data: [1, 2, 1, 2, 1, 1], backgroundColor: hexAlpha(SEMANTIC.caution, 0.88),   borderColor: SEMANTIC.caution,   stack: 'main' },
+                                    { label: 'Needs attention',       data: [1, 1, 1, 2, 1, 2], backgroundColor: hexAlpha(SEMANTIC.attention, 0.88), borderColor: SEMANTIC.attention, stack: 'main' },
                                 ],
                             }}
                             options={{
@@ -559,6 +681,71 @@ export const WithFilterDropdown: StoryObj = {
     },
 };
 
+export const WithDoughnutChart: StoryObj = {
+    name: 'ChartCard + DoughnutChart',
+    decorators: [
+        (Story) => (
+            <div style={{ width: 400, padding: 24 }}>
+                <Story />
+            </div>
+        ),
+    ],
+    render: () => {
+        const EPIS_COLORS = {
+            exploration:        SERIES_COLORS[0],
+            preparation:        SEMANTIC.neutral,
+            implementation:     SEMANTIC.caution,
+            fullImplementation: SEMANTIC.positive,
+        } as const;
+        const EPIS_DATA = [
+            { label: 'Exploration',         value: 18, color: EPIS_COLORS.exploration },
+            { label: 'Preparation',         value: 19, color: EPIS_COLORS.preparation },
+            { label: 'Implementation',      value: 18, color: EPIS_COLORS.implementation },
+            { label: 'Full implementation', value: 1,  color: EPIS_COLORS.fullImplementation },
+        ];
+        const total = EPIS_DATA.reduce((s, d) => s + d.value, 0);
+        return (
+            <ChartCard
+                chartName="EPIS · Actions"
+                icon={<DonutLargeIcon sx={ICON_SX} />}
+                title="Actions by EPIS stage"
+                titleTooltip={{
+                    content: {
+                        text: 'Actions are tracked using the EPIS framework (Exploration, Preparation, Implementation, Sustainment). Each action is linked to community improvement goals.',
+                    },
+                }}
+                filters={<FilterChip label="Year" value="2025" />}
+                chart={
+                    <DoughnutChart
+                        data={{
+                            labels: EPIS_DATA.map((d) => d.label),
+                            datasets: [{
+                                data: EPIS_DATA.map((d) => d.value),
+                                backgroundColor: EPIS_DATA.map((d) => hexAlpha(d.color, 0.88)),
+                                borderColor: EPIS_DATA.map((d) => d.color),
+                                borderWidth: 1,
+                                hoverOffset: 6,
+                            }],
+                        }}
+                        options={{
+                            plugins: {
+                                legend: makeLegend(),
+                                tooltip: {
+                                    ...makeTooltip(),
+                                    callbacks: {
+                                        label: (item: { parsed: number; label: string }) => ` ${item.parsed} action${item.parsed !== 1 ? 's' : ''} — ${item.label}`,
+                                    },
+                                },
+                            },
+                        } as any}
+                        centerLabel={{ count: total, caption: 'actions' }}
+                    />
+                }
+            />
+        );
+    },
+};
+
 export const LoadingState: StoryObj = {
     name: 'Loading state',
     render: () => (
@@ -575,12 +762,65 @@ export const LoadingState: StoryObj = {
     ),
 };
 
-export const EmptyState: StoryObj = {
-    name: 'Empty state',
-    render: () => <EmptyChartState />,
+export const EmptyStateNoFilters: StoryObj = {
+    name: 'Empty state — no data for filters',
+    render: () => (
+        <ChartCard
+            chartName="ANC · Routine Care"
+            icon={<BarChartIcon sx={ICON_SX} />}
+            title="Routine test completeness by care item"
+            filters={<>
+                <FilterChip label="Site" value="Gowrie Docklands Kinder" />
+                <FilterChip label="Period" value="Q1 2023 – Q2 2024" />
+            </>}
+            chart={<EmptyChartState reason="no-filters" />}
+        />
+    ),
 };
 
-export const EmptyStateCustomMessage: StoryObj = {
-    name: 'Empty state — custom message',
-    render: () => <EmptyChartState message="No data has been submitted for this reporting period." />,
+export const EmptyStateNotStarted: StoryObj = {
+    name: 'Empty state — reporting not started',
+    render: () => (
+        <ChartCard
+            chartName="ECEC · Weekly Attendance"
+            icon={<BarChartIcon sx={ICON_SX} />}
+            title="Weekly attendance amongst children by hours bracket"
+            filters={<>
+                <FilterChip label="Centre" value="Gowrie Oberon Kindergarten" />
+                <FilterChip label="Who are" value="3, 4 & 5 year olds" />
+            </>}
+            chart={<EmptyChartState reason="not-started" />}
+        />
+    ),
+};
+
+export const EmptyStateLoadingFailed: StoryObj = {
+    name: 'Empty state — data unavailable',
+    render: () => (
+        <ChartCard
+            chartName="PP · Evidence Fidelity"
+            icon={<ShowChartIcon sx={ICON_SX} />}
+            title="Proportion of programs implemented to evidence"
+            filters={<>
+                <FilterChip label="Strategy" value="All strategies" />
+            </>}
+            chart={<EmptyChartState reason="loading-failed" chartType="line" />}
+        />
+    ),
+};
+
+export const EmptyStateNoResults: StoryObj = {
+    name: 'Empty state — no matching results',
+    render: () => (
+        <ChartCard
+            chartName="ECEC · Implementation Breakdown"
+            icon={<BarChartIcon sx={ICON_SX} />}
+            title="Implementation breakdown by component — SP view"
+            filters={<>
+                <FilterChip label="Program" value="Supported Playgroups" />
+                <FilterChip label="Site" value="Gowrie Marshalltown Rd" />
+            </>}
+            chart={<EmptyChartState reason="no-results" />}
+        />
+    ),
 };

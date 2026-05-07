@@ -220,3 +220,67 @@ export const StrategyIndexECECActive: Story = {
         defaultOpenIds: ['dashboard'],
     },
 };
+
+// ─── Variant stories ──────────────────────────────────────────────────────────
+
+export const ServiceProvider: Story = {
+    name: 'Variant — Service Provider (Data active)',
+    args: {
+        variant: 'service-provider',
+        activeItemId: 'dashboard',
+        orgName: 'Gowrie Victoria',
+        defaultOpenIds: [],
+    },
+};
+
+export const ServiceProviderUploadActive: Story = {
+    name: 'Variant — Service Provider (Upload active)',
+    args: {
+        variant: 'service-provider',
+        activeItemId: 'upload',
+        orgName: 'Gowrie Victoria',
+        defaultOpenIds: [],
+    },
+};
+
+export const Community: Story = {
+    name: 'Variant — Community (Dashboard active)',
+    args: {
+        variant: 'community',
+        activeItemId: 'dashboard',
+        orgName: 'Derby Community',
+        userName: 'Jillian Hunter',
+        userEmail: 'jillian.hunter@communities.wa.gov.au',
+        defaultOpenIds: [],
+    },
+};
+
+export const CommunityServiceProvidersActive: Story = {
+    name: 'Variant — Community (Service Providers active)',
+    args: {
+        variant: 'community',
+        activeItemId: 'service-providers',
+        orgName: 'Derby Community',
+        defaultOpenIds: [],
+    },
+};
+
+export const Hub: Story = {
+    name: 'Variant — Hub (Dashboard active)',
+    args: {
+        variant: 'hub',
+        activeItemId: 'dashboard',
+        orgName: 'SSI Maternal & Child Health Hub',
+        defaultOpenIds: [],
+    },
+};
+
+export const HubDirectoryActive: Story = {
+    name: 'Variant — Hub (Directory active)',
+    args: {
+        variant: 'hub',
+        activeItemId: 'directory',
+        orgName: 'SSI Maternal & Child Health Hub',
+        defaultOpenIds: [],
+    },
+};
