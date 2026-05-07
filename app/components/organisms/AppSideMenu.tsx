@@ -17,24 +17,20 @@ import {
     useMediaQuery,
     useTheme,
 } from '@mui/material';
-import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
-import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
-import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
-import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
+import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined'; // Dashboard
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';            // Submit Data
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';              // Directory
+import LoopOutlinedIcon from '@mui/icons-material/LoopOutlined';                        // Planning
+import BookOutlinedIcon from '@mui/icons-material/BookOutlined';                        // Resources
+import PersonSearchOutlinedIcon from '@mui/icons-material/PersonSearchOutlined';        // User Management (admin only)
+import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined'; // Feedback
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';                // Settings
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';                    // Sign Out
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
-import KeyboardDoubleArrowLeftRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowLeftRounded';
-import KeyboardDoubleArrowRightRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowRightRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
-import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
-import ApartmentOutlinedIcon from '@mui/icons-material/ApartmentOutlined';
-import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
-import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
-import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
-import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardDoubleArrowLeftRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowLeftRounded';   // Collapse sidebar
+import KeyboardDoubleArrowRightRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowRightRounded';    // Expand sidebar
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -59,7 +55,7 @@ const isSubGroup = (item: RstoNavChildItem): item is RstoNavSubGroup =>
 
 // ─── Variant colour schemes ───────────────────────────────────────────────────
 
-export type SideNavVariant = 'service-provider' | 'community' | 'hub';
+export type SideNavVariant = 'service-provider' | 'community' | 'hub' | 'admin';
 
 type NavColorScheme = {
     activeBg: string;
@@ -67,14 +63,22 @@ type NavColorScheme = {
     activeText: string;
 };
 
-const variantSchemes: Record<SideNavVariant, NavColorScheme> = {
-    'service-provider': { activeBg: '#FEF7EF', activeBorder: '#F28B2D', activeText: '#F28B2D' },
-    community:          { activeBg: '#EEF8F4', activeBorder: '#0F6E56', activeText: '#0F6E56' },
-    hub:                { activeBg: '#FEF7EF', activeBorder: '#C06A12', activeText: '#C06A12' },
+// Single universal colour scheme — all user types see the same active state
+const activeScheme: NavColorScheme = {
+    activeBg:     '#E8F2F4',  // rstoBlue._10 — sky tint
+    activeBorder: '#2D6B7A',  // rstoBlue._70 — dusk teal (5.27:1 on bg, passes WCAG AA)
+    activeText:   '#2D6B7A',  // rstoBlue._70 — dusk teal (5.27:1 on bg, passes WCAG AA)
 };
 
-// Default scheme matches the existing orange theme
-const defaultColorScheme: NavColorScheme = { activeBg: '#FDF1E2', activeBorder: '#A34E16', activeText: '#A34E16' };
+// Kept for backward compat — all variants now resolve to the same scheme
+const variantSchemes: Record<SideNavVariant, NavColorScheme> = {
+    'service-provider': activeScheme,
+    community:          activeScheme,
+    hub:                activeScheme,
+    admin:              activeScheme,
+};
+
+const defaultColorScheme: NavColorScheme = activeScheme;
 
 const NavColorContext = React.createContext<NavColorScheme>(defaultColorScheme);
 
@@ -106,7 +110,7 @@ export type Environment = 'preview' | 'ci' | 'production';
 
 const ENV_CONFIG: Record<Exclude<Environment, 'production'>, { label: string; color: 'warning' | 'info' }> = {
     preview: { label: 'Preview', color: 'warning' },
-    ci:      { label: 'CI Planning', color: 'info' },
+    ci:      { label: 'Testing Environment 1.0', color: 'info' },
 };
 
 export type AppSideMenuProps = {
@@ -123,6 +127,8 @@ export type AppSideMenuProps = {
     navItems?: RstoNavItem[];
     utilityItems?: RstoNavItem[];
     environment?: Environment;
+    /** Force the sidebar open regardless of viewport width. Useful for Storybook. */
+    defaultExpanded?: boolean;
 };
 
 // ─── Default data ─────────────────────────────────────────────────────────────
@@ -131,45 +137,19 @@ const defaultNavItems: RstoNavItem[] = [
     {
         id: 'dashboard',
         label: 'Dashboard',
-        icon: <DashboardOutlinedIcon sx={{ fontSize: 16 }} />,
-        children: [
-            {
-                id: 'quality',
-                label: 'Quality',
-                children: [
-                    { id: 'quality-1', code: 'QL1', label: 'Are services meeting quality standards?' },
-                    { id: 'quality-2', code: 'QL2', label: 'Staff qualifications and training' },
-                ],
-            },
-            {
-                id: 'quantity',
-                label: 'Quantity',
-                children: [
-                    { id: 'quantity-1', code: 'QN1', label: 'Are there adequate antenatal care facilities?' },
-                    { id: 'quantity-2', code: 'QN2', label: 'Service provider capacity' },
-                ],
-            },
-            {
-                id: 'participation',
-                label: 'Participation',
-                children: [
-                    { id: 'participation-1', code: 'P1', label: 'Community engagement levels' },
-                    { id: 'participation-2', code: 'P2', label: 'Enrolment and attendance rates' },
-                ],
-            },
-        ],
+        icon: <SpaceDashboardOutlinedIcon sx={{ fontSize: 20 }} />,
     },
-    { id: 'upload', label: 'Upload', icon: <FileUploadOutlinedIcon sx={{ fontSize: 16 }} /> },
-    { id: 'ci-planning', label: 'CI Planning', icon: <CalendarTodayOutlinedIcon sx={{ fontSize: 16 }} /> },
-    { id: 'resources', label: 'Resources', icon: <FolderOutlinedIcon sx={{ fontSize: 16 }} /> },
+    { id: 'upload', label: 'Upload', icon: <FileUploadOutlinedIcon sx={{ fontSize: 20 }} /> },
+    { id: 'ci-planning', label: 'CI Planning', icon: <LoopOutlinedIcon sx={{ fontSize: 20 }} /> },
+    { id: 'resources', label: 'Resources', icon: <BookOutlinedIcon sx={{ fontSize: 20 }} /> },
 ];
 
 const defaultUtilityItems: RstoNavItem[] = [
-    { id: 'support', label: 'Support', icon: <SupportAgentOutlinedIcon sx={{ fontSize: 16 }} /> },
+    { id: 'support', label: 'Support', icon: <SupportAgentOutlinedIcon sx={{ fontSize: 20 }} /> },
     {
         id: 'settings',
         label: 'Settings',
-        icon: <SettingsOutlinedIcon sx={{ fontSize: 16 }} />,
+        icon: <SettingsOutlinedIcon sx={{ fontSize: 20 }} />,
         children: [
             { id: 'directory', label: 'Directory' },
             { id: 'user-management', label: 'User Management' },
@@ -179,42 +159,59 @@ const defaultUtilityItems: RstoNavItem[] = [
 
 // ─── Variant preset nav items ─────────────────────────────────────────────────
 
+// ── Shared icon references for consistency ────────────────────────────────────
+const NAV_ICONS = {
+    dashboard:      <SpaceDashboardOutlinedIcon sx={{ fontSize: 20 }} />,
+    submitData:     <FileUploadOutlinedIcon sx={{ fontSize: 20 }} />,
+    directory:      <PeopleAltOutlinedIcon sx={{ fontSize: 20 }} />,
+    planning:       <LoopOutlinedIcon sx={{ fontSize: 20 }} />,
+    resources:      <BookOutlinedIcon sx={{ fontSize: 20 }} />,
+    userManagement: <PersonSearchOutlinedIcon sx={{ fontSize: 20 }} />,
+    feedback:       <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 20 }} />,
+    settings:       <SettingsOutlinedIcon sx={{ fontSize: 20 }} />,
+};
+
 const variantNavItems: Record<SideNavVariant, RstoNavItem[]> = {
+    // Service providers: manage their own data — no Directory (they are the directory entry)
     'service-provider': [
-        { id: 'dashboard', label: 'Data',      icon: <BarChartOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'upload',    label: 'Upload',    icon: <FileUploadOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'plan',      label: 'Plan',      icon: <GridViewOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'resources', label: 'Resources', icon: <MenuBookOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'dashboard',   label: 'Dashboard',    icon: NAV_ICONS.dashboard  },
+        { id: 'submit-data', label: 'Submit Data',  icon: NAV_ICONS.submitData },
+        { id: 'planning',    label: 'Planning',     icon: NAV_ICONS.planning   },
+        { id: 'resources',   label: 'Resources',    icon: NAV_ICONS.resources  },
     ],
+    // Community facilitators: oversee multiple service providers
     community: [
-        { id: 'dashboard',         label: 'Dashboard',         icon: <DashboardOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'service-providers', label: 'Service Providers', icon: <ApartmentOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'ci-planning',       label: 'CI Planning',       icon: <AutorenewOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'resources',         label: 'Resources',         icon: <MenuBookOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'calendar',          label: 'Calendar',          icon: <CalendarTodayOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'dashboard', label: 'Dashboard', icon: NAV_ICONS.dashboard },
+        { id: 'directory', label: 'Directory', icon: NAV_ICONS.directory },
+        { id: 'planning',  label: 'Planning',  icon: NAV_ICONS.planning  },
+        { id: 'resources', label: 'Resources', icon: NAV_ICONS.resources },
     ],
+    // Hub coordinators: oversee providers, plan, access resources
     hub: [
-        { id: 'dashboard', label: 'Dashboard', icon: <DashboardOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'directory', label: 'Directory', icon: <FolderOpenOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'upload',    label: 'Upload',    icon: <FileUploadOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'plan',      label: 'Plan',      icon: <AutorenewOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'resources', label: 'Resources', icon: <MenuBookOutlinedIcon sx={{ fontSize: 16 }} /> },
+        { id: 'directory', label: 'Directory', icon: NAV_ICONS.directory },
+        { id: 'planning',  label: 'Planning',  icon: NAV_ICONS.planning  },
+        { id: 'resources', label: 'Resources', icon: NAV_ICONS.resources },
+    ],
+    // RSTO admins: platform-wide access + user management
+    admin: [
+        { id: 'directory',       label: 'Directory',       icon: NAV_ICONS.directory      },
+        { id: 'resources',       label: 'Resources',       icon: NAV_ICONS.resources      },
+        { id: 'user-management', label: 'User Management', icon: NAV_ICONS.userManagement },
     ],
 };
 
+// Utility items are identical across all variants — Feedback + Settings always visible
+const sharedUtilityItems: RstoNavItem[] = [
+    { id: 'feedback', label: 'Feedback', icon: NAV_ICONS.feedback },
+    { id: 'settings', label: 'Settings', icon: NAV_ICONS.settings },
+];
+
 const variantUtilityItems: Record<SideNavVariant, RstoNavItem[]> = {
-    'service-provider': [
-        { id: 'feedback', label: 'Feedback', icon: <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'settings', label: 'Settings', icon: <SettingsOutlinedIcon sx={{ fontSize: 16 }} /> },
-    ],
-    community: [
-        { id: 'feedback', label: 'Feedback', icon: <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'settings', label: 'Settings', icon: <SettingsOutlinedIcon sx={{ fontSize: 16 }} /> },
-    ],
-    hub: [
-        { id: 'feedback', label: 'Feedback', icon: <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 16 }} /> },
-        { id: 'settings', label: 'Settings', icon: <SettingsOutlinedIcon sx={{ fontSize: 16 }} /> },
-    ],
+    'service-provider': sharedUtilityItems,
+    community:          sharedUtilityItems,
+    hub:                sharedUtilityItems,
+    admin:              sharedUtilityItems,
+    // Note: Sign Out is rendered separately by the component (not in utility items array)
 };
 
 // ─── Level-3 leaf: page link inside a sub-group ───────────────────────────────
@@ -247,7 +244,7 @@ const SubNavItem = ({
                 backgroundColor: scheme.activeBg,
             },
             '&.Mui-selected:hover': { backgroundColor: scheme.activeBg },
-            '&:hover': { backgroundColor: 'rstoGray._40' },
+            '&:hover': { backgroundColor: 'rstoNeutral.paper' },
         }}
     >
         {item.code ? (
@@ -264,8 +261,8 @@ const SubNavItem = ({
                 </Typography>
                 <Typography sx={{
                     fontSize: 12,
-                    fontWeight: selected ? 500 : 400,
-                    color: 'rstoGray._90',
+                    fontWeight: selected ? 600 : 400,
+                    color: 'rstoNeutral.shadow',
                     lineHeight: 1.4,
                 }}>
                     {item.label}
@@ -277,8 +274,8 @@ const SubNavItem = ({
                     primary={item.label}
                     primaryTypographyProps={{
                         fontSize: 13,
-                        fontWeight: selected ? 500 : 400,
-                        color: 'rstoGray._90',
+                        fontWeight: selected ? 600 : 400,
+                        color: 'rstoNeutral.shadow',
                         lineHeight: 1.4,
                     }}
                 />
@@ -324,7 +321,7 @@ const SubNavGroupHeader = ({
             py: 0.5,
             ml: 0,
             mb: 0.25,
-            '&:hover': { backgroundColor: 'rstoGray._40' },
+            '&:hover': { backgroundColor: 'rstoNeutral.paper' },
         }}
     >
         <ListItemText
@@ -333,12 +330,12 @@ const SubNavGroupHeader = ({
             primaryTypographyProps={{
                 fontSize: 13,
                 fontWeight: 600,
-                color: 'rstoGray.black',
+                color: 'rstoNeutral.ink',
             }}
         />
         {open
-            ? <KeyboardArrowDownRoundedIcon sx={{ color: 'rstoGray._80', fontSize: 14, position: 'relative', zIndex: 1 }} />
-            : <KeyboardArrowRightRoundedIcon sx={{ color: 'rstoGray._80', fontSize: 14, position: 'relative', zIndex: 1 }} />
+            ? <KeyboardArrowDownIcon sx={{ color: 'rstoNeutral.shadow', fontSize: 14, position: 'relative', zIndex: 1 }} />
+            : <KeyboardArrowRightIcon sx={{ color: 'rstoNeutral.shadow', fontSize: 14, position: 'relative', zIndex: 1 }} />
         }
     </ListItemButton>
 );
@@ -435,7 +432,7 @@ const StrategyIndexPanel = ({
                                 fontWeight: 500,
                                 minWidth: 0,
                                 textTransform: 'none',
-                                color: 'rstoGray._80',
+                                color: 'rstoNeutral.shadow',
                                 '&.Mui-selected': { color: 'rstoOrange._70', fontWeight: 600 },
                             },
                         }}
@@ -463,7 +460,7 @@ const StrategyIndexPanel = ({
                                 py: 0.5,
                                 ml: 0,
                                 mb: 0.25,
-                                '&:hover': { backgroundColor: 'rstoGray._40' },
+                                '&:hover': { backgroundColor: 'rstoNeutral.paper' },
                             }}
                         >
                             <ListItemText
@@ -472,12 +469,12 @@ const StrategyIndexPanel = ({
                                 primaryTypographyProps={{
                                     fontSize: 13,
                                     fontWeight: 600,
-                                    color: 'rstoGray.black',
+                                    color: 'rstoNeutral.ink',
                                 }}
                             />
                             {openSections[section.id]
-                                ? <KeyboardArrowDownRoundedIcon sx={{ color: 'rstoGray._80', fontSize: 14 }} />
-                                : <KeyboardArrowRightRoundedIcon sx={{ color: 'rstoGray._80', fontSize: 14 }} />
+                                ? <KeyboardArrowDownIcon sx={{ color: 'rstoNeutral.shadow', fontSize: 14 }} />
+                                : <KeyboardArrowRightIcon sx={{ color: 'rstoNeutral.shadow', fontSize: 14 }} />
                             }
                         </ListItemButton>
                         <Collapse in={openSections[section.id] ?? false} timeout="auto" unmountOnExit>
@@ -539,24 +536,26 @@ const TopLevelRow = ({
                 backgroundColor: scheme.activeBorder,
             },
             '&.Mui-selected:hover': { backgroundColor: scheme.activeBg },
-            '&:hover': { backgroundColor: 'rstoGray._40' },
+            '&:hover': { backgroundColor: 'rstoNeutral.paper' },
+            gap: 1,
         }}
     >
-        <ListItemIcon sx={{ minWidth: 24, color: selected ? scheme.activeText : 'rstoGray._90' }}>
+        <ListItemIcon sx={{ minWidth: 0, color: selected ? scheme.activeText : 'rstoNeutral.shadow' }}>
             {item.icon}
         </ListItemIcon>
         <ListItemText
             primary={item.label}
             primaryTypographyProps={{
+                fontFamily: '"Open Sans", sans-serif',
                 fontSize: 14,
-                fontWeight: selected ? 500 : 400,
-                color: selected ? scheme.activeText : 'rstoGray.black',
+                fontWeight: selected ? 600 : 400,
+                color: selected ? scheme.activeText : 'rstoNeutral.ink',
             }}
         />
         {(item.children || item.strategyGroups) && (
             open
-                ? <KeyboardArrowDownRoundedIcon sx={{ color: selected ? scheme.activeText : 'rstoGray._80', fontSize: 16 }} />
-                : <KeyboardArrowRightRoundedIcon sx={{ color: selected ? scheme.activeText : 'rstoGray._80', fontSize: 16 }} />
+                ? <KeyboardArrowDownIcon sx={{ color: selected ? scheme.activeText : 'rstoNeutral.shadow', fontSize: 16 }} />
+                : <KeyboardArrowRightIcon sx={{ color: selected ? scheme.activeText : 'rstoNeutral.shadow', fontSize: 16 }} />
         )}
     </ListItemButton>
     );
@@ -638,6 +637,7 @@ const AppSideMenu = ({
     navItems,
     utilityItems,
     environment,
+    defaultExpanded = false,
 }: AppSideMenuProps) => {
     const scheme = variant ? variantSchemes[variant] : defaultColorScheme;
     const resolvedNavItems = navItems ?? (variant ? variantNavItems[variant] : defaultNavItems);
@@ -650,7 +650,7 @@ const AppSideMenu = ({
     // Auto-collapse below md (900px). User can still expand/collapse manually.
     const isBelowMd = useMediaQuery(theme.breakpoints.down('md'));
     const [userCollapsed, setUserCollapsed] = React.useState<boolean | null>(null);
-    const collapsed = userCollapsed !== null ? userCollapsed : isBelowMd;
+    const collapsed = defaultExpanded ? false : (userCollapsed !== null ? userCollapsed : isBelowMd);
 
     // Reset user override when crossing the md breakpoint
     React.useEffect(() => { setUserCollapsed(null); }, [isBelowMd]);
@@ -700,7 +700,7 @@ const AppSideMenu = ({
                     borderRadius: '8px',
                     minHeight: 44,
                     justifyContent: 'center',
-                    px: 0,
+                    px: 1.5,
                     py: 0.75,
                     mb: 0.25,
                     position: 'relative',
@@ -717,10 +717,10 @@ const AppSideMenu = ({
                         backgroundColor: scheme.activeBorder,
                     },
                     '&.Mui-selected:hover': { backgroundColor: scheme.activeBg },
-                    '&:hover': { backgroundColor: 'rstoGray._40' },
+                    '&:hover': { backgroundColor: 'rstoNeutral.paper' },
                 }}
             >
-                <Box sx={{ color: active ? scheme.activeText : 'rstoGray._90', display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ color: active ? scheme.activeText : 'rstoNeutral.shadow', display: 'flex', alignItems: 'center' }}>
                     {item.icon}
                 </Box>
             </ListItemButton>
@@ -786,14 +786,14 @@ const AppSideMenu = ({
                     backgroundColor: 'rstoGray.white',
                     border: '1px solid',
                     borderColor: 'rstoGray._50',
-                    px: 0.5,
+                    px: 1.5,
                     py: 1.5,
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 0.5,
                 }}
             >
-                <Box sx={{ py: 1, mb: 2.5, display: 'flex', justifyContent: 'center' }}>
+                <Box sx={{ py: 1, mb: 2, display: 'flex', justifyContent: 'center' }}>
                     <img
                         src="/rsto_logomark_fullcolour.svg"
                         alt={brandName}
@@ -803,29 +803,24 @@ const AppSideMenu = ({
 
                 <List disablePadding>{safeNavItems.map(renderCollapsedItem)}</List>
 
-                <Divider sx={{ my: 0.75 }} />
-
-                <List disablePadding>{safeUtilityItems.map(renderCollapsedItem)}</List>
-
-                <Box sx={{ mt: 'auto', pt: 0.75 }}>
+                <Box sx={{ mt: 'auto', pt: 1 }}>
+                    <Divider sx={{ mb: 1 }} />
+                    <List disablePadding>{safeUtilityItems.map(renderCollapsedItem)}</List>
                     {onLogout && (
-                        <>
-                            <Divider sx={{ mb: 0.75 }} />
-                            <ListItemButton
-                                onClick={onLogout}
-                                sx={{
-                                    borderRadius: '8px',
-                                    minHeight: 44,
-                                    justifyContent: 'center',
-                                    px: 0,
-                                    py: 0.75,
-                                    mb: 0.25,
-                                    '&:hover': { backgroundColor: 'rstoGray._40' },
-                                }}
-                            >
-                                <LogoutRoundedIcon sx={{ fontSize: 16, color: 'rstoGray._90' }} />
-                            </ListItemButton>
-                        </>
+                        <ListItemButton
+                            onClick={onLogout}
+                            sx={{
+                                borderRadius: '8px',
+                                minHeight: 44,
+                                justifyContent: 'center',
+                                px: 1.5,
+                                py: 0.75,
+                                mb: 0.25,
+                                '&:hover': { backgroundColor: 'rstoNeutral.paper' },
+                            }}
+                        >
+                            <LogoutOutlinedIcon sx={{ fontSize: 20, color: 'rstoNeutral.shadow' }} />
+                        </ListItemButton>
                     )}
                     <ListItemButton
                         onClick={() => setUserCollapsed(false)}
@@ -833,12 +828,12 @@ const AppSideMenu = ({
                             borderRadius: '8px',
                             minHeight: 44,
                             justifyContent: 'center',
-                            px: 0,
+                            px: 1.5,
                             py: 0.75,
-                            '&:hover': { backgroundColor: 'rstoGray._40' },
+                            '&:hover': { backgroundColor: 'rstoNeutral.paper' },
                         }}
                     >
-                        <KeyboardDoubleArrowRightRoundedIcon sx={{ fontSize: 16, color: 'rstoGray._90' }} />
+                        <KeyboardDoubleArrowRightRoundedIcon sx={{ fontSize: 20, color: 'rstoNeutral.shadow' }} />
                     </ListItemButton>
                 </Box>
             </Paper>
@@ -858,7 +853,7 @@ const AppSideMenu = ({
                 backgroundColor: 'rstoGray.white',
                 border: '1px solid',
                 borderColor: 'rstoGray._50',
-                px: 2.5,
+                px: 2,
                 pt: 3,
                 pb: 1.5,
                 display: 'flex',
@@ -866,75 +861,54 @@ const AppSideMenu = ({
                 gap: 0.5,
             }}
         >
-            <Box sx={{ px: 1.5, pt: 0, pb: 0, mb: 3.5 }}>
-                {orgName ? (
-                    <Box>
-                        <Typography sx={{ fontSize: 13, fontWeight: 600, color: 'text.primary', lineHeight: 1.3 }}>
-                            {orgName}
-                        </Typography>
-                        {userName && (
-                            <Typography sx={{ fontSize: 12, color: 'text.secondary', mt: '2px' }}>
-                                {userName}
-                            </Typography>
-                        )}
-                        {userEmail && (
-                            <Typography sx={{ fontSize: 11, color: 'text.disabled', mt: '1px', wordBreak: 'break-word' }}>
-                                {userEmail}
-                            </Typography>
-                        )}
-                    </Box>
-                ) : (
-                    <img
-                        src="/rsto_logomark_fullcolour.svg"
-                        alt={brandName}
-                        style={{ width: 'auto', height: 64, display: 'block' }}
-                    />
-                )}
+            <Box sx={{ pt: 0, pb: 0, mb: 3 }}>
+                <img
+                    src="/rsto_logomark_fullcolour.svg"
+                    alt={brandName}
+                    style={{ width: 'auto', height: 64, display: 'block' }}
+                />
             </Box>
 
             <List disablePadding>{safeNavItems.map(renderItem)}</List>
 
-            <Divider sx={{ my: 0.75 }} />
-
-            <List disablePadding>{safeUtilityItems.map(renderItem)}</List>
-
-            <Box sx={{ mt: 'auto', pt: 0.75 }}>
-                {onLogout && (
-                    <>
-                        <Divider sx={{ mb: 0.75 }} />
-                        <ListItemButton
-                            onClick={onLogout}
-                            sx={{
-                                borderRadius: '8px',
-                                minHeight: 44,
-                                px: 1.5,
-                                py: 0.75,
-                                mb: 0.25,
-                                '&:hover': { backgroundColor: 'rstoGray._40' },
-                            }}
-                        >
-                            <ListItemIcon sx={{ minWidth: 24, color: 'rstoGray._90' }}>
-                                <LogoutRoundedIcon sx={{ fontSize: 16 }} />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary={logoutLabel}
-                                primaryTypographyProps={{
-                                    fontSize: 14,
-                                    fontWeight: 400,
-                                    color: 'rstoGray.black',
-                                }}
-                            />
-                        </ListItemButton>
-                    </>
-                )}
+            {/* Bottom section — env chip, divider, utility items + logout */}
+            <Box sx={{ mt: 'auto', pt: 1 }}>
                 {environment && environment !== 'production' && (
                     <Chip
                         label={ENV_CONFIG[environment].label}
                         color={ENV_CONFIG[environment].color}
                         variant="outlined"
                         size="small"
-                        sx={{ mb: 1, fontWeight: 500, fontSize: 11 }}
+                        sx={{ mb: 1, fontWeight: 500, fontSize: 11, '& .MuiChip-label': { px: 1 } }}
                     />
+                )}
+                <Divider sx={{ my: 1 }} />
+                <List disablePadding>{safeUtilityItems.map(renderItem)}</List>
+                {onLogout && (
+                    <ListItemButton
+                        onClick={onLogout}
+                        sx={{
+                            borderRadius: '8px',
+                            minHeight: 44,
+                            px: 1.5,
+                            py: 0.75,
+                            mb: 0.25,
+                            gap: 1,
+                            '&:hover': { backgroundColor: 'rstoNeutral.paper' },
+                        }}
+                    >
+                        <ListItemIcon sx={{ minWidth: 0, color: 'rstoNeutral.shadow' }}>
+                            <LogoutOutlinedIcon sx={{ fontSize: 20 }} />
+                        </ListItemIcon>
+                        <ListItemText
+                            primary={logoutLabel}
+                            primaryTypographyProps={{
+                                fontSize: 14,
+                                fontWeight: 400,
+                                color: 'rstoNeutral.ink',
+                            }}
+                        />
+                    </ListItemButton>
                 )}
                 <ListItemButton
                     onClick={() => setUserCollapsed(true)}
@@ -943,19 +917,20 @@ const AppSideMenu = ({
                         minHeight: 44,
                         px: 1.5,
                         py: 0.75,
-                        '&:hover': { backgroundColor: 'rstoGray._40' },
+                        gap: 1,
+                        '&:hover': { backgroundColor: 'rstoNeutral.paper' },
                     }}
                 >
-                    <ListItemIcon sx={{ minWidth: 24, color: 'rstoGray._90' }}>
-                        <KeyboardDoubleArrowLeftRoundedIcon sx={{ fontSize: 16 }} />
+                    <ListItemIcon sx={{ minWidth: 0, color: 'rstoNeutral.shadow' }}>
+                        <KeyboardDoubleArrowLeftRoundedIcon sx={{ fontSize: 20 }} />
                     </ListItemIcon>
                     <ListItemText
                         primary="Collapse sidebar"
                         primaryTypographyProps={{
-                            fontFamily: '"Inter", sans-serif',
+                            fontFamily: '"Open Sans", sans-serif',
                             fontSize: 14,
                             fontWeight: 400,
-                            color: 'rstoGray.black',
+                            color: 'rstoNeutral.ink',
                         }}
                     />
                 </ListItemButton>
