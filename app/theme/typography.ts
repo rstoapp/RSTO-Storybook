@@ -1,56 +1,66 @@
 import { ThemeOptions } from '@mui/material/styles/createTheme';
 import { fonts } from './tokens';
 
-// Fonts are loaded via Google Fonts in globals.css
-// Fraunces is the display typeface (replaces Bebas Neue) — used for h1–h3
-// Open Sans is the body typeface (replaces Inter)
+// Open Sans is used for all type — h1 through caption and overline
 
 export const typography: ThemeOptions['typography'] = {
     fontFamily: fonts.body,
     h1: {
-        fontFamily: fonts.display,
-        fontSize: '2rem',        // 32px — matches actual usage across all pages
-        lineHeight: '2.5rem',    // 1.25x
-        letterSpacing: '0.02em',
+        fontSize: '2.25rem',     // 36px
+        lineHeight: '2.75rem',   // 44px
+        letterSpacing: '-0.01em',
+        fontWeight: 700,
     },
     h2: {
-        fontSize: '2rem',        // 32px
-        lineHeight: '2.5rem',    // 1.25x
+        fontSize: '1.5rem',      // 24px — matches rsto-app
+        lineHeight: '2rem',      // 32px
         letterSpacing: '-0.01em',
         fontWeight: 700,
     },
     h3: {
-        fontSize: '1.5rem',      // 24px
-        lineHeight: '2rem',      // 1.33x
+        fontSize: '1.25rem',     // 20px — matches rsto-app
+        lineHeight: '1.75rem',   // 28px
         letterSpacing: 0,
         fontWeight: 700,
     },
     h4: {
-        fontSize: '1.25rem',     // 20px
-        lineHeight: '1.75rem',   // 1.4x
+        fontSize: '1.125rem',    // 18px — component headings: modals, cards
+        lineHeight: '1.625rem',  // 26px
         letterSpacing: 0,
         fontWeight: 600,
     },
     h5: {
-        fontSize: '1.125rem',    // 18px
-        lineHeight: '1.5rem',    // 1.33x
+        fontSize: '1rem',        // 16px — item headings: table names, list items
+        lineHeight: '1.5rem',    // 24px
         letterSpacing: 0,
         fontWeight: 600,
     },
     h6: {
-        fontSize: '1rem',        // 16px — same as body1, differentiated by weight
-        lineHeight: '1.5rem',    // 1.5x
+        fontSize: '0.875rem',    // 14px — compact headings, secondary labels
+        lineHeight: '1.375rem',  // 22px
         letterSpacing: 0,
+        fontWeight: 600,
+    },
+    subtitle1: {
+        fontSize: '1rem',        // 16px — bold body (replaces body1 + fontWeight)
+        lineHeight: '1.5rem',    // 24px
+        letterSpacing: '0.01em',
+        fontWeight: 600,
+    },
+    subtitle2: {
+        fontSize: '0.875rem',    // 14px — bold secondary (replaces body2 + fontWeight)
+        lineHeight: '1.375rem',  // 22px
+        letterSpacing: '0.01em',
         fontWeight: 600,
     },
     body1: {
         fontSize: '1rem',        // 16px
-        lineHeight: '1.5rem',    // 1.5x — standard readable line height
+        lineHeight: '1.5rem',    // 24px
         letterSpacing: '0.01em',
     },
     body2: {
         fontSize: '0.875rem',    // 14px
-        lineHeight: '1.375rem',  // 1.57x
+        lineHeight: '1.375rem',  // 22px
         letterSpacing: '0.01em',
     },
     button: {
@@ -66,7 +76,7 @@ export const typography: ThemeOptions['typography'] = {
         letterSpacing: '0.02em',
     },
     overline: {
-        fontSize: '0.6875rem',   // 11px — minimum for WCAG legibility
+        fontSize: '0.6875rem',   // 11px
         lineHeight: '1rem',
         letterSpacing: '0.08em',
         textTransform: 'uppercase',

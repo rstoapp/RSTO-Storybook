@@ -7,7 +7,10 @@ import {
     SEMANTIC,
     SEMANTIC_LABELS,
     HEATMAP_COLORS,
+    CHART_FONT_FAMILY,
+    CHART_FONT_SIZES,
 } from '../organisms/charts/chart-theme';
+import { eyebrowSx } from '../../theme/typography';
 
 const meta: Meta = {
     title: 'RSTO/Foundation/Chart Palette',
@@ -74,14 +77,14 @@ function Swatch({
                         height: 40,
                         borderRadius: '6px',
                         backgroundColor: color,
-                        border: '1px solid rgba(0,0,0,0.06)',
+                        border: `1px solid ${P.sand}`,
                     }}
                 />
-                <Typography sx={{ fontSize: 11, fontWeight: 600, color: '#3D3028', lineHeight: 1.3 }}>
+                <Typography sx={{ ...eyebrowSx, color: P.bark, lineHeight: 1.3 }}>
                     {label}
                 </Typography>
                 {sublabel && (
-                    <Typography sx={{ fontSize: 10, color: '#8A7B6A', lineHeight: 1.2 }}>
+                    <Typography variant="caption" sx={{ color: P.shadow, lineHeight: 1.2 }}>
                         {sublabel}
                     </Typography>
                 )}
@@ -94,9 +97,9 @@ function Section({ title, description, children }: { title: string; description?
     return (
         <Stack spacing={2}>
             <Stack spacing={0.5}>
-                <Typography sx={{ fontSize: 13, fontWeight: 700, color: '#3D3028' }}>{title}</Typography>
+                <Typography variant="subtitle2" sx={{ color: P.bark }}>{title}</Typography>
                 {description && (
-                    <Typography sx={{ fontSize: 12, color: '#8A7B6A', maxWidth: 560 }}>{description}</Typography>
+                    <Typography variant="caption" sx={{ color: P.shadow, maxWidth: 560 }}>{description}</Typography>
                 )}
             </Stack>
             <Stack direction="row" flexWrap="wrap" gap={2}>
@@ -135,7 +138,7 @@ Only add \`attention\` (fourth level) for critical/alarm states.
             </Section>
 
             <Stack spacing={1.5}>
-                <Typography sx={{ fontSize: 13, fontWeight: 700, color: '#3D3028' }}>Three-level usage example</Typography>
+                <Typography variant="subtitle2" sx={{ color: P.bark }}>Three-level usage example</Typography>
                 <Stack direction="row" spacing={0} sx={{ height: 32, borderRadius: '6px', overflow: 'hidden', width: 360 }}>
                     {[
                         { color: SEMANTIC.positive,  label: SEMANTIC_LABELS.positive,  flex: 5 },
@@ -147,7 +150,7 @@ Only add \`attention\` (fourth level) for critical/alarm states.
                         </Tooltip>
                     ))}
                 </Stack>
-                <Typography sx={{ fontSize: 11, color: '#8A7B6A' }}>
+                <Typography variant="caption" sx={{ color: P.shadow }}>
                     Green · Blue · Orange — Program fidelity, outcome classification, RAG status
                 </Typography>
             </Stack>
@@ -230,12 +233,135 @@ export const NeutralSurfaces: StoryObj = {
     ),
 };
 
+export const ChartTypography: StoryObj = {
+    name: 'Chart typography',
+    parameters: {
+        docs: {
+            description: {
+                story: `
+All chart text is set in **Open Sans** (sourced from \`CHART_FONT_FAMILY\` in \`chart-theme.ts\`).
+Sizes and weights are defined in \`CHART_FONT_SIZES\` and applied via Chart.js \`font\` option objects —
+they are intentionally separate from the MUI typography scale, which Chart.js never reads.
+
+| Role | Size | Weight | Colour token |
+|---|---|---|---|
+| Axis tick | 11 px | Regular 400 | \`P.shadow\` |
+| Legend label | 11 px | Regular 400 | \`P.shadow\` |
+| Tooltip title | 12 px | SemiBold 600 | \`P.ink\` |
+| Tooltip body | 11 px | Regular 400 | \`P.earth\` |
+| Tooltip footer | 11 px | Regular 400 | \`P.earth\` |
+
+> **Compact density** drops axis and legend text to **9.5 px / 10 px** via the
+> \`density: 'compact'\` option in \`makeScales\` and \`makeLegend\`.
+                `,
+            },
+        },
+    },
+    render: () => {
+        const ff = CHART_FONT_FAMILY;
+        const rows: { role: string; sample: string; size: number; weight: number | string; color: string; token: string }[] = [
+            { role: 'Axis tick',      sample: '100  200  300  400  500',   size: CHART_FONT_SIZES.axisLabel,    weight: 400, color: P.shadow, token: 'P.shadow' },
+            { role: 'Legend label',   sample: '30+ hrs · 25–<30 hrs · Did not attend', size: CHART_FONT_SIZES.legend, weight: 400, color: P.shadow, token: 'P.shadow' },
+            { role: 'Tooltip title',  sample: '28 Jul 2025',               size: CHART_FONT_SIZES.tooltipTitle, weight: 600, color: P.ink,    token: 'P.ink'    },
+            { role: 'Tooltip body',   sample: '30+ hrs: 195 children',     size: CHART_FONT_SIZES.tooltipBody,  weight: 400, color: P.earth,  token: 'P.earth'  },
+            { role: 'Tooltip footer', sample: 'Total enrolled: 835',        size: CHART_FONT_SIZES.tooltipBody,  weight: 400, color: P.earth,  token: 'P.earth'  },
+        ];
+
+        return (
+            <Stack spacing={3} sx={{ p: 3 }}>
+                <Stack spacing={0.5}>
+                    <Typography variant="subtitle2" sx={{ color: P.bark }}>
+                        Chart typography — Open Sans
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: P.shadow, maxWidth: 560 }}>
+                        All roles use <code style={{ fontSize: 11 }}>CHART_FONT_FAMILY</code> and{' '}
+                        <code style={{ fontSize: 11 }}>CHART_FONT_SIZES</code> from{' '}
+                        <code style={{ fontSize: 11 }}>chart-theme.ts</code>, passed directly to Chart.js font option objects.
+                    </Typography>
+                </Stack>
+
+                <Box
+                    sx={{
+                        border: `1px solid ${P.sand}`,
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                    }}
+                >
+                    {/* Header row */}
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            gridTemplateColumns: '140px 1fr 72px 80px 120px',
+                            px: 2,
+                            py: 1,
+                            backgroundColor: P.frost,
+                            borderBottom: `1px solid ${P.bone}`,
+                        }}
+                    >
+                        {['Role', 'Sample', 'Size', 'Weight', 'Colour token'].map((h) => (
+                            <Typography key={h} variant="overline" sx={{ color: P.shadow }}>
+                                {h}
+                            </Typography>
+                        ))}
+                    </Box>
+
+                    {rows.map(({ role, sample, size, weight, color, token }, idx) => (
+                        <Box
+                            key={role}
+                            sx={{
+                                display: 'grid',
+                                gridTemplateColumns: '140px 1fr 72px 80px 120px',
+                                px: 2,
+                                py: 1.5,
+                                alignItems: 'center',
+                                borderBottom: idx < rows.length - 1 ? `1px solid ${P.bone}` : 'none',
+                            }}
+                        >
+                            <Typography sx={{ ...eyebrowSx, color: P.earth }}>
+                                {role}
+                            </Typography>
+                            <Typography sx={{ fontFamily: ff, fontSize: size, fontWeight: weight, color }}>
+                                {sample}
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: P.shadow }}>
+                                {size} px
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: P.shadow }}>
+                                {weight === 600 ? 'SemiBold 600' : 'Regular 400'}
+                            </Typography>
+                            <Stack direction="row" spacing={0.75} alignItems="center">
+                                <Box sx={{ width: 12, height: 12, borderRadius: '2px', backgroundColor: color, border: `1px solid ${P.sand}`, flexShrink: 0 }} />
+                                <Typography variant="caption" sx={{ color: P.shadow, fontFamily: 'monospace' }}>
+                                    {token}
+                                </Typography>
+                            </Stack>
+                        </Box>
+                    ))}
+                </Box>
+
+                {/* Compact density note */}
+                <Box sx={{ borderLeft: `3px solid ${P.bone}`, pl: 1.5 }}>
+                    <Typography sx={{ ...eyebrowSx, color: P.earth, mb: 0.25 }}>
+                        Compact density
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: P.shadow }}>
+                        Pass <code style={{ fontSize: 10 }}>density: &apos;compact&apos;</code> to{' '}
+                        <code style={{ fontSize: 10 }}>makeScales()</code> and{' '}
+                        <code style={{ fontSize: 10 }}>makeLegend()</code> to drop axis text to{' '}
+                        <strong>9.5 px</strong> and legend text to <strong>10 px</strong> for space-constrained panels.
+                    </Typography>
+                </Box>
+            </Stack>
+        );
+    },
+};
+
 export const HeatmapScale: StoryObj = {
     name: 'Heatmap scale (attendance)',
     parameters: {
         docs: {
             description: {
-                story: 'Ten-step scale for WeeklyAttendanceChart. Runs dark sage → light sage → warm neutral. Bottom band (index 0) = highest attendance; index 8 = "Did not attend" (55% opacity); index 9 = "Total enrolled".',
+                story: 'Ten-step scale for WeeklyAttendanceChart. Runs deep green → mid green → light green → teal bridge → sky blue → warm amber → deep rust. Green = on track (good/go). Orange threshold begins at index 5 (8–<10 hrs). Index 9 = "Did not attend" (55% opacity).',
             },
         },
     },
@@ -243,7 +369,7 @@ export const HeatmapScale: StoryObj = {
         <Stack spacing={3} sx={{ p: 3 }}>
             <Section
                 title="Heatmap scale — 10 attendance bands"
-                description="Dark → light top to bottom. Index 8 = 'Did not attend' (rendered at 55% opacity). Index 9 = 'Total enrolled' (stone)."
+                description="Deep teal-blue → sky blue → sage green → warm amber → deep rust. Index 5 = orange threshold (8–<10 hrs). Index 9 = 'Did not attend' (55% opacity)."
             >
                 {HEATMAP_COLORS.map((color, i) => (
                     <Swatch key={color} color={color} label={`Band ${i}`} sublabel={color} />

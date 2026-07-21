@@ -15,7 +15,7 @@ const BarrierRow = ({ icon, title, description }: BarrierRowProps) => (
     <Stack direction="row" spacing={1.5} alignItems="flex-start">
         <Box sx={{ mt: 0.25 }}>{icon}</Box>
         <Box>
-            <Typography variant="body2" sx={{ fontWeight: 700 }}>
+            <Typography variant="subtitle2">
                 {title}
             </Typography>
             <Typography variant="body2" color="text.secondary">

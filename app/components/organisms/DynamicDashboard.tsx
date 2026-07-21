@@ -56,7 +56,7 @@ function renderInfo({ heading, body }: InfoWidget): React.ReactNode {
     return (
         <InfoCard sx={{ width: '100%' }}>
             <CardContent sx={{ padding: '24px' }}>
-                <Typography variant="h6" fontWeight={700} gutterBottom>
+                <Typography variant="h4" gutterBottom>
                     {heading}
                 </Typography>
                 <Typography variant="body1" color="rstoGray._90">
@@ -71,7 +71,7 @@ function renderWarning({ heading, body }: WarningWidget): React.ReactNode {
     return (
         <WarningCard sx={{ width: '100%' }}>
             <CardContent sx={{ padding: '24px' }}>
-                <Typography variant="h6" fontWeight={700} gutterBottom>
+                <Typography variant="h4" gutterBottom>
                     {heading}
                 </Typography>
                 <Typography variant="body1" color="rstoGray._90">
@@ -151,7 +151,7 @@ const DynamicDashboard = ({ manifest, error }: DynamicDashboardProps) => {
     if (error) {
         return (
             <Alert severity="error" sx={{ m: 2 }}>
-                <Typography variant="body2" fontWeight={700}>Dashboard could not be rendered</Typography>
+                <Typography variant="subtitle2">Dashboard could not be rendered</Typography>
                 <Typography variant="body2">{error}</Typography>
             </Alert>
         );
@@ -161,7 +161,7 @@ const DynamicDashboard = ({ manifest, error }: DynamicDashboardProps) => {
         <Stack spacing={3}>
             {manifest.title && (
                 <Stack spacing={0.5}>
-                    <Typography variant="h4" fontWeight={700}>
+                    <Typography variant="h4">
                         {manifest.title}
                     </Typography>
                     {manifest.description && (

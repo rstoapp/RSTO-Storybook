@@ -1,7 +1,7 @@
 'use client';
 import * as React from 'react';
 import { Box, ClickAwayListener, Fade, IconButton, Paper, Popper, Stack, Typography } from '@mui/material';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import dayjs, { Dayjs } from 'dayjs';
@@ -57,16 +57,27 @@ const ReportingPeriodSelector = ({
                     alignItems="center"
                     spacing={0.5}
                     onClick={handleToggle}
-                    sx={{ cursor: 'pointer', userSelect: 'none' }}
+                    sx={{
+                        cursor: 'pointer',
+                        userSelect: 'none',
+                        border: '1px solid',
+                        borderColor: 'rstoGray._40',
+                        borderRadius: '8px',
+                        px: 1.5,
+                        py: 1,
+                        bgcolor: 'common.white',
+                        color: 'text.primary',
+                        '&:hover': { borderColor: 'rstoGray._60', bgcolor: 'rstoGray._20' },
+                    }}
                 >
-                    <CalendarMonthIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                    <Typography variant="body2" fontWeight={600}>
+                    <CalendarMonthOutlinedIcon sx={{ fontSize: 18 }} />
+                    <Typography variant="button" fontWeight={400}>
                         {label}
                     </Typography>
                     {open ? (
-                        <ExpandLessIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                        <ExpandLessIcon sx={{ fontSize: 18 }} />
                     ) : (
-                        <ExpandMoreIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                        <ExpandMoreIcon sx={{ fontSize: 18 }} />
                     )}
                 </Stack>
 

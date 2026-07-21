@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Before writing any UI code, load the `rsto-storybook-design-system` skill.
+
 ## Commands
 
 ```bash

@@ -43,8 +43,7 @@ export function mkAttendanceDatasets(attendanceData: number[][], alpha = 0.92) {
         backgroundColor: i === HEATMAP_NAMES.length - 1
             ? hexAlpha(HEATMAP_COLORS[i], 0.55)
             : hexAlpha(HEATMAP_COLORS[i], alpha),
-        borderColor: '#FFFFFF',
-        borderWidth: 0.5,
+        borderWidth: 0,
     }));
 }
 

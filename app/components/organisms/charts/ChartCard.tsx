@@ -6,6 +6,7 @@ import RstoTooltip, { RstoTooltipProps } from '../../molecules/RstoTooltip';
 export { default as FilterChip } from '../../molecules/FilterChip';
 export type { FilterChipProps } from '../../molecules/FilterChip';
 import { P, CHART_FONT_FAMILY } from './chart-theme';
+import { eyebrowSx } from '../../../theme/typography';
 
 interface ChartCardProps {
     chartName?: string;
@@ -60,15 +61,10 @@ const ChartCard = ({
                                 <BarChartIcon sx={{ color: P.eyebrow, width: '14px', height: '14px' }} />
                             )}
                             <Typography
-                                variant="overline"
                                 sx={{
+                                    ...eyebrowSx,
                                     color: P.eyebrow,
                                     fontFamily: CHART_FONT_FAMILY,
-                                    fontWeight: 600,
-                                    fontSize: '11px',
-                                    lineHeight: 1,
-                                    letterSpacing: '0.03em',
-                                    textTransform: 'none',
                                 }}
                             >
                                 {chartName}

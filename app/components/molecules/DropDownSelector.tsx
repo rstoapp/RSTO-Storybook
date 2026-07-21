@@ -84,7 +84,7 @@ const DropDownSelector = ({
                     return (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.secondary' }}>
                             {startIcon}
-                            <Typography variant="body1" sx={{ fontWeight: 600 }} color="text.secondary">
+                            <Typography variant="subtitle1" color="text.secondary">
                                 {selectedOption?.label || String(selected)}
                             </Typography>
                             {allowClear && value && (
@@ -112,7 +112,7 @@ const DropDownSelector = ({
                 )}
                 {options.map((option, index) => (
                     <MenuItem key={index} value={option.value}>
-                        <Typography variant="body1" sx={{ fontWeight: 600 }}>{option.label}</Typography>
+                        <Typography variant="subtitle1">{option.label}</Typography>
                     </MenuItem>
                 ))}
             </StyledSelect>

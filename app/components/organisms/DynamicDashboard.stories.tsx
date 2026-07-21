@@ -1,12 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import DynamicDashboard from './DynamicDashboard';
 import { DashboardManifest } from '../../lib/dashboard-manifest';
+import { rstoOrange, rstoBlue, rstoGreen, rstoBrown } from '../../theme/tokens';
 
-// ── Shared colours ────────────────────────────────────────────────────────────
-const ORANGE = '#E07B39';
-const BLUE = '#1B6CA8';
-const GREEN = '#4D8613';
-const PURPLE = '#9C27B0';
+// ── Shared colours (token-derived — no palette has purple, brown is the 4th accent) ──
+const ORANGE = rstoOrange._50; // #F28B2D
+const BLUE = rstoBlue._70;     // #19788E
+const GREEN = rstoGreen._50;   // #5D7A45
+const BROWN = rstoBrown._50;   // #6F5340
 
 // ── Meta ──────────────────────────────────────────────────────────────────────
 
@@ -227,7 +228,7 @@ const immunisationManifest: DashboardManifest = {
                             {
                                 label: 'Coverage',
                                 data: [91, 84, 76, 62],
-                                backgroundColor: [ORANGE, BLUE, GREEN, PURPLE],
+                                backgroundColor: [ORANGE, BLUE, GREEN, BROWN],
                             },
                         ],
                     },

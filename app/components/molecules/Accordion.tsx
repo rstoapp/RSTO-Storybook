@@ -74,7 +74,7 @@ const Accordion: React.FC<AccordionProps> = ({
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <TitleContainer>
                     <LibraryBooksOutlinedIcon sx={{ fontSize: 18 }} />
-                    <Typography variant="h6" component="div" sx={{ fontWeight: 600, lineHeight: '24px' }}>
+                    <Typography variant="h6" component="div" sx={{ lineHeight: '24px' }}>
                         {title}
                     </Typography>
                 </TitleContainer>

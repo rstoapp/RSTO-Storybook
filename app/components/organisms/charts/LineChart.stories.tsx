@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import LineChart from './LineChart';
-import { SERIES_COLORS, hexAlpha } from './chart-theme';
+import { SERIES_COLORS, P, hexAlpha } from './chart-theme';
 import { makeScales, makeLegend, makeTooltip, BASE_OPTIONS } from './default-chart-options';
 
 // ─── Sample data ──────────────────────────────────────────────────────────────
@@ -22,7 +22,7 @@ function makeLineDataset(
         backgroundColor: hexAlpha(color, fillAlpha),
         borderWidth: lineWidth,
         pointBackgroundColor: color,
-        pointBorderColor: 'white',
+        pointBorderColor: P.paper,
         pointBorderWidth: 2,
         pointRadius,
         pointHoverRadius: pointRadius + 2,
@@ -39,6 +39,21 @@ const meta = {
     tags: ['autodocs'],
     parameters: {
         layout: 'padded',
+        a11y: {
+            config: {
+                rules: [
+                    { id: 'color-contrast', enabled: true },
+                    { id: 'keyboard', enabled: true },
+                ],
+            },
+        },
+        viewport: {
+            viewports: {
+                mobile: { name: 'Mobile', styles: { width: '375px', height: '812px' } },
+                tablet: { name: 'Tablet', styles: { width: '768px', height: '1024px' } },
+                desktop: { name: 'Desktop', styles: { width: '1440px', height: '900px' } },
+            },
+        },
         docs: {
             description: {
                 component: `

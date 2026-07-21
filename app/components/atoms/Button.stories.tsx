@@ -9,6 +9,25 @@ const meta: Meta<typeof Button> = {
     title: 'RSTO/Atoms/Button',
     component: Button,
     tags: ['autodocs'],
+    parameters: {
+        layout: 'centered',
+        a11y: {
+            config: {
+                rules: [
+                    { id: 'color-contrast', enabled: true },
+                    { id: 'keyboard', enabled: true },
+                    { id: 'focus-trap', enabled: true },
+                ],
+            },
+        },
+        viewport: {
+            viewports: {
+                mobile: { name: 'Mobile', styles: { width: '375px', height: '812px' } },
+                tablet: { name: 'Tablet', styles: { width: '768px', height: '1024px' } },
+                desktop: { name: 'Desktop', styles: { width: '1440px', height: '900px' } },
+            },
+        },
+    },
     args: {
         children: 'Button label',
         variant: 'contained',
@@ -37,22 +56,22 @@ type Story = StoryObj<typeof Button>;
 // ── Base variants ─────────────────────────────────────────────────────────────
 
 export const Primary: Story = {
-    // Deep teal fill (#1D4552) — main call-to-action. Hover lightens to #2D6B7A. Radius 8px.
+    // rstoBlue._70 (#19788E) fill — main call-to-action. Hover: rstoBlue._60 (#4CAAC1). Radius 8px.
     args: { color: 'primary', variant: 'contained', children: 'Primary action' },
 };
 
 export const Secondary: Story = {
-    // Dusk teal outlined (#2D6B7A border + text) — supporting actions alongside a primary.
+    // White fill, rstoGray.black (#191919) text, rstoGray._40 (#EFEFEF) border — supporting actions.
     args: { color: 'secondary', variant: 'outlined', children: 'Secondary action' },
 };
 
 export const Disabled: Story = {
-    // Bone fill (#F4ECE0) + stone text (#BFB197) — applies to all variants.
+    // rstoGray._30 (#F3F3F3) fill + rstoGray._90 (#474747) text — applies to all variants.
     args: { color: 'primary', variant: 'contained', disabled: true, children: 'Disabled' },
 };
 
 export const Destructive: Story = {
-    // Terracotta fill (#C86A1F) — delete / irreversible actions only. Never use outlined destructive.
+    // rstoOrange._60 (#D87214) fill — delete / irreversible actions only. Never use outlined destructive.
     args: { color: 'error', variant: 'contained', children: 'Delete', startIcon: <DeleteOutlineIcon /> },
 };
 

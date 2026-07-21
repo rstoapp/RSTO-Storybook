@@ -25,46 +25,46 @@ export const colours = {
 export const palette: Partial<ThemeOptions['palette']> = {
     ...colours,
     background: {
-        // Warm outback neutrals — matches prototype --n-paper / --warm-card
-        default: rstoNeutral.paper,   // #FBF6EE — Page / app shell background
-        paper:   '#FDFAF4',           // Warm card surface — slightly lighter than page, per prototype --warm-card
+        // Pure white backgrounds to match rsto-app production
+        default: rstoGray.white,   // #FFFFFF — Page / app shell background
+        paper:   rstoGray.white,   // #FFFFFF — Card surface
     },
     info: {
         main:          rstoBlue._60,
         light:         rstoBlue._50,
         dark:          rstoBlue._70,
-        contrastText:  rstoNeutral.ink,
+        contrastText:  rstoGray.white,
     },
     warning: {
         main:          rstoOrange._50, // Warning banners, caution badges
         light:         rstoOrange._40,
         dark:          rstoOrange._60,
-        contrastText:  rstoNeutral.ink,
-    },
-    // MUI "primary" = deep teal — drives buttons, checkboxes, radio buttons, focus rings, Slider.
-    primary: {
-        main:          rstoBlue._80,  // #1D4552 — deep teal (8.1:1 AAA)
-        light:         rstoBlue._60,  // #3E90A3 — mid teal (chips, hover surfaces)
-        dark:          rstoBlue._70,  // #2D6B7A — used for hover on primary button
         contrastText:  rstoGray.white,
     },
-    // MUI "secondary" = dusk teal outlined (light teal fill on hover).
+    // MUI "primary" = RSTO orange — drives primary buttons, links, focus rings
+    primary: {
+        main:          rstoOrange._50,  // #F28B2D — RSTO orange (matches rsto-app)
+        light:         rstoOrange._40,  // Lighter orange for hover surfaces
+        dark:          rstoOrange._60,  // Darker orange for hover on primary button
+        contrastText:  rstoGray.white,
+    },
+    // MUI "secondary" = blue outlined
     secondary: {
-        main:         rstoBlue._70,  // #2D6B7A — dusk teal border + text
-        light:        rstoBlue._10,  // #E8F2F4 — light teal hover fill
-        dark:         rstoBlue._80,  // #1D4552 — deeper border on hover
+        main:         rstoBlue._70,   // Dark blue border + text
+        light:        rstoBlue._10,   // Light blue hover fill
+        dark:         rstoBlue._80,   // Deeper border on hover
         contrastText: rstoBlue._70,
     },
     error: {
-        main:  rstoOrange._60,  // Destructive action buttons (terracotta)
-        light: rstoOrange._40,
-        dark:  rstoOrange._70,
+        main:  rstoRed._60,         // Destructive action buttons
+        light: rstoRed._40,
+        dark:  rstoRed._70,
         contrastText: rstoGray.white,
     },
     text: {
-        primary:   rstoNeutral.ink,     // #1F1A14 — body copy, headings (warm ink)
-        secondary: rstoNeutral.shadow,  // #6B5E4A — supporting / descriptive text
-        disabled:  rstoNeutral.stone,   // #BFB197 — inactive labels
+        primary:   rstoGray.black,   // #191919 — body copy, headings (pure black)
+        secondary: rstoGray._90,     // #474747 — supporting / descriptive text
+        disabled:  rstoGray._70,     // #A3A3A3 — inactive labels
     },
     success: {
         main:         rstoFunctional.success,  // Success icon, badge fill

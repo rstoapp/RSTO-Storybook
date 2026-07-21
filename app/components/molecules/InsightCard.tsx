@@ -5,6 +5,7 @@ import { Stack, Box, Skeleton } from '@mui/material';
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import InfoCard from './InfoCard';
 import RstoTooltip, { RstoTooltipProps } from './RstoTooltip';
+import { eyebrowSx } from '../../theme/typography';
 
 interface InsightCardProps {
     insightName?: string;
@@ -34,11 +35,7 @@ const InsightCard = ({
                             />
                         )}
                         <Typography
-                            variant="overline"
-                            sx={{
-                                color: 'rstoBlue._70',
-                                marginLeft: '8px',
-                            }}
+                            sx={{ ...eyebrowSx, color: 'rstoBlue._70', marginLeft: '8px' }}
                         >
                             {insightName}
                         </Typography>

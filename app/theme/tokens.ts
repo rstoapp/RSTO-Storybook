@@ -1,43 +1,43 @@
 // Raw design tokens — single source of truth for the RSTO palette.
-// Outback scale names (from theme.css) are noted in comments.
+// Matches rsto-app production implementation.
 
-// ─── Neutrals (outback: n-*) ─────────────────────────────────────────────────
-// Warm off-whites to deep clay. Use in place of pure grays for backgrounds,
-// borders, and text where the warm-earth character of the brand is needed.
+// ─── Neutrals (pure gray scale) ──────────────────────────────────────────────
+// Pure grays for backgrounds, borders, and text.
+// Note: rstoNeutral kept for compatibility but maps to rstoGray values.
 export const rstoNeutral = {
-    paper:  '#FBF6EE', // --n-paper  (N-00) page background
-    bone:   '#F4ECE0', // --n-bone   (N-10) card backgrounds
-    sand:   '#E8DCC6', // --n-sand   (N-20) rules, borders
-    stone:  '#BFB197', // --n-stone  (N-40) tertiary text
-    shadow: '#6B5E4A', // --n-shadow (N-60) secondary text
-    earth:  '#3D352A', // --n-earth  (N-80) body text
-    ink:    '#1F1A14', // --n-ink    (N-90) headlines
+    paper:  '#FFFFFF', // Pure white page background
+    bone:   '#FCFCFC', // Card backgrounds
+    sand:   '#F3F3F3', // Rules, borders
+    stone:  '#D1D1D1', // Tertiary text
+    shadow: '#474747', // Secondary text
+    earth:  '#191919', // Body text
+    ink:    '#191919', // Headlines
 } as const;
 
-// ─── Orange / Ochre (outback: o-*) ───────────────────────────────────────────
-// RSTO primary orange. Sunset, earth, terracotta.
+// ─── Orange (RSTO primary) ───────────────────────────────────────────────────
+// RSTO primary orange. Matches rsto-app production values.
 export const rstoOrange = {
-    _10: '#FDF1E2', // --o-10
-    _20: '#F8D9B0', // --o-20
-    _30: '#F0B174', // --o-30
-    _40: '#E8934A', // --o-40
-    _50: '#F28B2D', // --o-50  RSTO primary orange
-    _60: '#C86A1F', // --o-60  terracotta
-    _70: '#A34E16', // --o-70  burnt sienna
-    _80: '#6E3410', // --o-80  deep rust
+    _10: '#FDF1E2',
+    _20: '#F8D9B0',
+    _30: '#F0B174',
+    _40: '#E8934A',
+    _50: '#F28B2D', // RSTO primary orange
+    _60: '#D87214', // Darker orange
+    _70: '#A53F00', // Deep orange
+    _80: '#730C00', // Darkest orange
 } as const;
 
-// ─── Blue / Sky (outback: b-*) ───────────────────────────────────────────────
-// RSTO primary blue. Desert sky, waterhole, dusk.
+// ─── Blue (secondary accent) ─────────────────────────────────────────────────
+// Blue accent scale. Matches rsto-app production values.
 export const rstoBlue = {
-    _10: '#E8F2F4', // --b-10
-    _20: '#C3DDE2', // --b-20
-    _30: '#9CC5CE', // --b-30
-    _40: '#7AB8C5', // --b-40
-    _50: '#65C4DB', // --b-50  RSTO primary blue
-    _60: '#3E90A3', // --b-60
-    _70: '#2D6B7A', // --b-70  dusk
-    _80: '#1D4552', // --b-80
+    _10: '#E8F2F4',
+    _20: '#C3DDE2',
+    _30: '#9CC5CE',
+    _40: '#7AB8C5',
+    _50: '#65C4DB', // Light blue
+    _60: '#4CAAC1', // Mid blue
+    _70: '#19788E', // Dark blue
+    _80: '#00455C', // Darkest blue
 } as const;
 
 // ─── Green / Saltbush (outback: g-*) ─────────────────────────────────────────
@@ -52,17 +52,16 @@ export const rstoGreen = {
     _70: '#2D3D20', // --g-70
 } as const;
 
-// ─── Brown / Bark (outback: br-*) ────────────────────────────────────────────
-// Red ochre, pindan, bark. New in the outback palette — use for warm tertiary
-// accents, data vis, or UI surfaces that need earthy warmth beyond the orange.
+// ─── Brown (tertiary accent) ─────────────────────────────────────────────────
+// Brown scale for tertiary accents and data visualization.
 export const rstoBrown = {
-    _10: '#F0E4D5', // --br-10
-    _20: '#D8C4A6', // --br-20
-    _30: '#B8997A', // --br-30
-    _40: '#96735A', // --br-40
-    _50: '#6F5340', // --br-50  bark
-    _60: '#4F3A2C', // --br-60
-    _70: '#2D1F16', // --br-70
+    _10: '#F0E4D5',
+    _20: '#D8C4A6',
+    _30: '#B8997A',
+    _40: '#96735A',
+    _50: '#6F5340', // Mid brown
+    _60: '#4F3A2C',
+    _70: '#2D1F16',
 } as const;
 
 // ─── Gray (neutral, non-warm) ─────────────────────────────────────────────────
@@ -108,6 +107,5 @@ export const rstoFunctional = {
 
 // ─── Typography ───────────────────────────────────────────────────────────────
 export const fonts = {
-    display: '"Fraunces", Georgia, "Times New Roman", serif', // --font-display (replaces Bebas Neue)
-    body:    '"Open Sans", sans-serif',                       // --font-open-sans (replaces Inter)
+    body: '"Open Sans", sans-serif',
 } as const;

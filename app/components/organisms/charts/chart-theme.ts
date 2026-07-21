@@ -1,24 +1,40 @@
 /**
  * chart-theme.ts
- * RSTO Chart Design System — v4.1 Outback Palette Desaturated
+ * RSTO Chart Design System — token-aligned
  * Chart.js ^4.4.1 · react-chartjs-2 ^5.2.0
+ *
+ * Every colour here is derived from the master design tokens in
+ * `app/theme/tokens.ts` — the single source of truth for the RSTO palette.
+ * Do NOT introduce raw hex values in this file or in chart stories; add or
+ * reference a token instead so charts stay in lock-step with the rest of the
+ * design system.
  */
 
+import {
+    rstoOrange,
+    rstoBlue,
+    rstoGreen,
+    rstoGray,
+    rstoFunctional,
+    fonts,
+} from '../../../theme/tokens';
+
 // ─── Neutral surface tokens ───────────────────────────────────────────────────
+// All neutrals map to the pure `rstoGray` scale (matches rsto-app production).
 
 export const P = {
-  paper:   '#FFFFFF',   // Card background
-  frost:   '#FAF8F4',   // Skeleton/loading background — barely-warm white
-  linen:   '#F7F3ED',   // Empty state background — warm off-white, lighter than bone
-  bone:    '#EEE8DF',   // Gridlines, tooltip background
-  sand:    '#E0D8CC',   // Card border, tooltip border
-  stone:   '#A0A49C',   // Reference lines, decorative (Stone 50)
-  shadow:  '#8A7B6A',   // Axis ticks, legend text, filter labels (4.8:1 AA)
-  earth:   '#5C4F3A',   // Tooltip body, filter label text
-  bark:    '#3D3028',   // Card title — between earth and ink
-  ink:     '#2C2416',   // Tooltip title, filter values
-  o50:     '#C06010',   // RSTO brand orange — large UI elements (4.26:1, decorative)
-  eyebrow: '#9A4D0A',   // Eyebrow label + icon — #9A4D0A passes AA 4.5:1 on white at 11px
+  paper:   rstoGray.white, // #FFFFFF — Card background
+  frost:   rstoGray._20,   // #FCFCFC — Skeleton / loading background
+  linen:   rstoGray._30,   // #F3F3F3 — Empty-state background
+  bone:    rstoGray._40,   // #EFEFEF — Gridlines, tooltip background
+  sand:    rstoGray._50,   // #EAEAEA — Card border, tooltip border
+  stone:   rstoGray._70,   // #A3A3A3 — Reference lines, decorative
+  shadow:  rstoGray._80,   // #757575 — Axis ticks, legend text (4.6:1 AA on white)
+  earth:   rstoGray._90,   // #474747 — Tooltip body, filter label text
+  bark:    rstoGray.black, // #191919 — Card title
+  ink:     rstoGray.black, // #191919 — Tooltip title, filter values
+  o50:     rstoOrange._50, // #F28B2D — RSTO brand orange, large UI elements
+  eyebrow: rstoOrange._70, // #A53F00 — Eyebrow label + icon (AA 4.5:1 on white)
 } as const;
 
 export type PaletteKey = keyof typeof P;
@@ -28,46 +44,46 @@ export type PaletteKey = keyof typeof P;
 // Cool → warm direction: cooler = positive, warmer = concern.
 
 export const STACK_COLORS = [
-  '#3A5E52',  // Deep sage (Sage 70) — stack.1
-  '#567A6E',  // Mid sage  (Sage 60) — stack.2
-  '#4A8EA8',  // Teal-blue (Blue 55) — stack.3
-  '#C07840',  // Burnt clay (Amber 55) — stack.4
-  '#8C3A18',  // Deep rust (Amber 75) — stack.5
+  rstoGreen._60,  // #475F34 — deep sage  · stack.1
+  rstoGreen._50,  // #5D7A45 — mid sage   · stack.2
+  rstoBlue._70,   // #19788E — teal-blue  · stack.3
+  rstoOrange._60, // #D87214 — burnt clay · stack.4
+  rstoOrange._70, // #A53F00 — deep rust  · stack.5
 ] as const;
 
 // ─── Multi-series palette (LineChart, MultiLineChart) ────────────────────────
-// Assign by performance rank: highest → Series 1 (Blue 70), lowest → Series 6 (Amber 35)
+// Assign by performance rank: highest → Series 1 (Blue 70), lowest → Series 6.
 
 export const SERIES_COLORS = [
-  '#2E6878',  // Blue 70  — Series 1 · top performer / primary (5.8:1 AAA)
-  '#5A9EAF',  // Blue 55  — Series 2 · mid-range
-  '#8BBFCC',  // Blue 38  — Series 3 · light (decorative only)
-  '#8F4E2A',  // Amber 75 — Series 4 · contrasting warm
-  '#D4844A',  // Amber 55 — Series 5 · mid-warm
-  '#E8B48A',  // Amber 35 — Series 6 · low-signal (decorative only)
+  rstoBlue._70,   // #19788E — Series 1 · top performer / primary
+  rstoBlue._60,   // #4CAAC1 — Series 2 · mid-range
+  rstoBlue._40,   // #7AB8C5 — Series 3 · light (decorative only)
+  rstoOrange._70, // #A53F00 — Series 4 · contrasting warm
+  rstoOrange._60, // #D87214 — Series 5 · mid-warm
+  rstoOrange._40, // #E8934A — Series 6 · low-signal (decorative only)
 ] as const;
 
 export const SERIES_NAMES = [
-  'Series 1 · Blue 70',
-  'Series 2 · Blue 55',
-  'Series 3 · Blue 38',
-  'Series 4 · Amber 75',
-  'Series 5 · Amber 55',
-  'Series 6 · Amber 35',
+  'Series 1 · rstoBlue._70',
+  'Series 2 · rstoBlue._60',
+  'Series 3 · rstoBlue._40',
+  'Series 4 · rstoOrange._70',
+  'Series 5 · rstoOrange._60',
+  'Series 6 · rstoOrange._40',
 ] as const;
 
 // ─── Semantic RAG palette ─────────────────────────────────────────────────────
-// Use when colour carries meaning. Apply consistently across all views.
+// Use when colour carries meaning. Maps directly to the `rstoFunctional`
+// status scale so charts, badges, and status chips agree.
 //
 // RAG progression: On track → Neutral → Caution → Needs attention
-//                  Deep sage  Teal-blue  Burnt clay  Deep rust
 
 export const SEMANTIC = {
-  positive:  '#3A5E52',  // Deep sage  — On track / above threshold
-  neutral:   '#4A8EA8',  // Teal-blue  — Neutral / right direction
-  caution:   '#C07840',  // Burnt clay — Caution / below threshold
-  attention: '#8C3A18',  // Deep rust  — Needs attention / critical
-  reference: '#A0A49C',  // Stone 50   — Reference / total lines
+  positive:  rstoFunctional.statusPositive, // #5D7A45 — On track / above threshold
+  neutral:   rstoFunctional.statusModerate, // #3E90A3 — Neutral / right direction
+  caution:   rstoFunctional.statusWarning,  // #F28B2D — Caution / below threshold
+  attention: rstoFunctional.statusCritical, // #A34E16 — Needs attention / critical
+  reference: rstoGray._70,                   // #A3A3A3 — Reference / total lines
 } as const;
 
 export const SEMANTIC_LABELS = {
@@ -80,18 +96,20 @@ export const SEMANTIC_LABELS = {
 
 // ─── Weekly attendance / heatmap scale (10 series, bottom → top) ─────────────
 // Used in WeeklyAttendanceChart. "Did not attend" always renders at 55% opacity.
+// Sequential green → blue bridge → amber → rust, composed from the token scales.
+// Green = on track. Orange threshold begins at 8–<10 hrs (index 5).
 
 export const HEATMAP_COLORS = [
-  '#284E44',  // Sage 80 — 30+ hrs        (on track — darkest)
-  '#3D6860',  // Sage 70 — 25–<30 hrs
-  '#567A6E',  // Sage 60 — 15–<25 hrs
-  '#80A89C',  // Sage 40 — 13–<15 hrs
-  '#A0C4BA',  // Sage 28 — 10–<13 hrs
-  '#CAD8D0',  // Sage 18 — 8–<10 hrs
-  '#E8B48A',  // Amber 35 — 6–<8 hrs
-  '#C07840',  // Amber 55 — 4–<6 hrs
-  '#8C3A18',  // Deep rust — <4 hrs
-  '#A0A49C',  // Stone 50 — Did not attend (always at 55% opacity)
+  rstoGreen._70,  // #2D3D20 — 30+ hrs   (on track — darkest)
+  rstoGreen._60,  // #475F34 — 25–<30 hrs
+  rstoGreen._50,  // #5D7A45 — 15–<25 hrs
+  rstoBlue._70,   // #19788E — 13–<15 hrs (green→blue transition)
+  rstoBlue._60,   // #4CAAC1 — 10–<13 hrs (sky blue)
+  rstoOrange._40, // #E8934A — 8–<10 hrs  (concern threshold — orange starts here)
+  rstoOrange._50, // #F28B2D — 6–<8 hrs
+  rstoOrange._60, // #D87214 — 4–<6 hrs
+  rstoOrange._70, // #A53F00 — <4 hrs     (deep rust)
+  rstoGray._70,   // #A3A3A3 — Did not attend (always at 55% opacity)
 ] as const;
 
 export const HEATMAP_NAMES = [
@@ -109,7 +127,7 @@ export const HEATMAP_NAMES = [
 
 // ─── Typography ───────────────────────────────────────────────────────────────
 
-export const CHART_FONT_FAMILY = "'Open Sans', sans-serif";
+export const CHART_FONT_FAMILY = fonts.body; // '"Open Sans", sans-serif'
 
 export const CHART_FONT_SIZES = {
   axisLabel:    11,

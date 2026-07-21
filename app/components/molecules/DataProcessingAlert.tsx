@@ -5,9 +5,10 @@ interface DataProcessingAlertProps {
     title: string;
     description: string;
     icon: React.ReactNode;
+    cta?: React.ReactNode;
 }
 
-const DataProcessingAlert = ({ title, description, icon }: DataProcessingAlertProps) => {
+const DataProcessingAlert = ({ title, description, icon, cta }: DataProcessingAlertProps) => {
     return (
         <Stack spacing={1} width="fit-content" alignItems="center" textAlign="center">
             <Box
@@ -23,12 +24,13 @@ const DataProcessingAlert = ({ title, description, icon }: DataProcessingAlertPr
                     {icon}
                 </Box>
             </Box>
-            <Typography variant="body1" fontWeight={600}>
+            <Typography variant="subtitle1">
                 {title}
             </Typography>
             <Typography variant="body2" sx={{ whiteSpace: 'pre' }}>
                 {description}
             </Typography>
+            {cta && <Box paddingTop="4px">{cta}</Box>}
         </Stack>
     );
 };

@@ -17,7 +17,7 @@ const HeadingWithChips = ({ heading, headingTooltip, chips }: HeadingWithChipsPr
     return (
         <Stack spacing={1}>
             <Stack direction="row" alignItems="center">
-                <Typography variant="h5" fontWeight={700}>
+                <Typography variant="h4">
                     {heading}
                 </Typography>
                 {headingTooltip && <RstoTooltip {...headingTooltip} />}

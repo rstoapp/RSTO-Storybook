@@ -68,7 +68,7 @@ interface FileUploadButtonProps {
 
 const FileUploadButton = ({ text, ...props }: FileUploadButtonProps) => (
     <FileSelectButton variant="outlined" size="medium" color="secondary" {...props}>
-        <Typography variant="button" color="rstoGray._90" fontWeight={600}>{text}</Typography>
+        <Typography variant="button" color="rstoGray._90">{text}</Typography>
     </FileSelectButton>
 );
 
@@ -92,7 +92,7 @@ const FileUploadingButton = ({ text = 'Uploading…', uploadProgress }: FileUplo
     >
         <Stack direction="row" spacing={1} alignItems="center">
             <CircularProgress variant={uploadProgress !== undefined ? 'determinate' : 'indeterminate'} value={uploadProgress} color="info" size={18} />
-            <Typography variant="button" color="rstoGray._90" fontWeight={600}>{text}</Typography>
+            <Typography variant="button" color="rstoGray._90">{text}</Typography>
         </Stack>
     </Button>
 );
@@ -169,7 +169,7 @@ const UploadFileCard = ({
                     <Stack direction="row" spacing={2}>
                         <DescriptionOutlinedIcon fontSize="large" color="info" />
                         <Stack spacing={1}>
-                            <Typography variant="h5" fontWeight={600}>{title}</Typography>
+                            <Typography variant="h5">{title}</Typography>
                             <Typography variant="body2" color="rstoGray._90">
                                 Accepted file formats: {formatsLabel}
                             </Typography>

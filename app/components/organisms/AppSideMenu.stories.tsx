@@ -1,10 +1,29 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { Box } from '@mui/material';
 import AppSideMenu from './AppSideMenu';
 
 const meta: Meta<typeof AppSideMenu> = {
     title: 'RSTO/Organisms/AppSideMenu',
     component: AppSideMenu,
     tags: ['autodocs'],
+    parameters: {
+        layout: 'fullscreen',
+        a11y: {
+            config: {
+                rules: [
+                    { id: 'color-contrast', enabled: true },
+                    { id: 'keyboard', enabled: true },
+                ],
+            },
+        },
+        viewport: {
+            viewports: {
+                mobile: { name: 'Mobile', styles: { width: '375px', height: '812px' } },
+                tablet: { name: 'Tablet', styles: { width: '768px', height: '1024px' } },
+                desktop: { name: 'Desktop', styles: { width: '1440px', height: '900px' } },
+            },
+        },
+    },
     argTypes: {
         navItems:     { control: false },
         utilityItems: { control: false },
@@ -17,18 +36,18 @@ const meta: Meta<typeof AppSideMenu> = {
     },
     decorators: [
         (Story) => (
-            <div
-                style={{
+            <Box
+                sx={{
                     minHeight: '100vh',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    background: '#e3e3e3',
-                    padding: '2rem',
+                    bgcolor: 'rstoGray._50',
+                    p: 4,
                 }}
             >
                 <Story />
-            </div>
+            </Box>
         ),
     ],
 };

@@ -1,0 +1,7 @@
+{
+  "name": "RSTO — Weekly Attendance Chart",
+  "id": "rsto-weekly-attendance-chart",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"]
+}

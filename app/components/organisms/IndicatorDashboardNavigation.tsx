@@ -31,7 +31,7 @@ const IndicatorDashboardNavigation = ({
         <Stack sx={{ width: '100%' }}>
             <Stack direction="row" alignItems="center" spacing={1} sx={{ px: '24px', py: 2 }}>
                 <FormatListBulletedIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-                <Typography variant="overline" fontWeight={700} sx={{ letterSpacing: 1 }}>
+                <Typography variant="overline">
                     {title}
                 </Typography>
             </Stack>

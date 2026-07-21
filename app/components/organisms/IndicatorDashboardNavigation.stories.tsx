@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { Box } from '@mui/material';
 import IndicatorDashboardNavigation from './IndicatorDashboardNavigation';
 
 const meta: Meta<typeof IndicatorDashboardNavigation> = {
@@ -7,9 +8,9 @@ const meta: Meta<typeof IndicatorDashboardNavigation> = {
     tags: ['autodocs'],
     decorators: [
         (Story) => (
-            <div style={{ width: 288, background: '#fff', minHeight: '100vh' }}>
+            <Box sx={{ width: 288, bgcolor: 'background.paper', minHeight: '100vh' }}>
                 <Story />
-            </div>
+            </Box>
         ),
     ],
 };

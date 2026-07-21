@@ -2,21 +2,21 @@ import { ThemeOptions } from '@mui/material/styles/createTheme';
 import { colours } from './palette';
 
 // ─── Component token reference ────────────────────────────────────────────────
-// Buttons      → MuiButton  primary:     rstoBlue._80 fill (#1D4552), white text, no shadow — hover: _70
-//                           secondary:   outlined rstoBlue._70 border + text, rstoBlue._10 hover fill
-//                           disabled:    rstoNeutral.bone fill (#F4ECE0), rstoNeutral.stone text
+// Buttons      → MuiButton  primary:     rstoBlue._70 fill (#19788E), white text, no shadow — hover: _60
+//                           secondary:   outlined rstoGray._40 border / rstoGray.black text / white fill — hover: rstoGray._20 fill, rstoGray._60 border
+//                           disabled:    rstoGray._30 fill (#F3F3F3), rstoGray._90 text (#474747)
 //                           destructive: rstoOrange._60 fill (#C86A1F), white text, no shadow
 // Tabs         → MuiTabs    indicator: rstoOrange._50 (brand orange)
 // Chips        → MuiChip    primary: rstoBlue._70 fill / white text
 //                           secondary: rstoOrange._70 fill / white text
-//                           default: rstoGray._30 fill / rstoNeutral.shadow text
-// Cards        → MuiCard    border: rstoNeutral.sand (#E8DCC6) | elevation shadow: rstoGray.shadow
+//                           default: rstoGray._30 fill / rstoGray._90 text
+// Cards        → MuiCard    border: rstoGray._40 (#EFEFEF) | elevation shadow: rstoGray.shadow
 // Links        → MuiLink    rstoBlue._70
 // Alerts       → MuiAlert   success: rstoGreen._10 bg / _30 border / _60 stripe
 //                           error:   rstoRed._10 bg / _30 border / _60 stripe
-// Backgrounds  → palette    page: rstoNeutral.paper (#FBF6EE) | card: #FDFAF4
-// Text         → palette    primary: rstoNeutral.ink (#1F1A14) | secondary: rstoNeutral.shadow (#6B5E4A)
-// Focus ring   → palette    rstoBlue._80 (via primary.main)
+// Backgrounds  → palette    page: rstoGray.white (#FFFFFF) | card: rstoGray.white
+// Text         → palette    primary: rstoGray.black (#191919) | secondary: rstoGray._90 (#474747)
+// Focus ring   → palette    rstoOrange._50 (via primary.main)
 // Charts       → chart-theme.ts (SEMANTIC, STACK_COLORS, SERIES_COLORS)
 
 export const components: ThemeOptions['components'] = {
@@ -32,10 +32,10 @@ export const components: ThemeOptions['components'] = {
     MuiTab: {
         styleOverrides: {
             root: {
-                color: colours.rstoNeutral.shadow,  // #6B5E4A — inactive tab label
+                color: colours.rstoGray._90,  // #474747 — inactive tab label
                 padding: '0.25rem 1rem',
                 '&.Mui-selected': {
-                    color: colours.rstoNeutral.ink,  // #1F1A14 — active tab label
+                    color: colours.rstoGray.black,  // #191919 — active tab label
                 },
             },
         },
@@ -43,7 +43,7 @@ export const components: ThemeOptions['components'] = {
     MuiCard: {
         styleOverrides: {
             root: {
-                borderColor: colours.rstoNeutral.sand,  // #E8DCC6 — warm card border
+                borderColor: colours.rstoGray._40,  // #EFEFEF — card border
                 borderRadius: 2,
                 borderWidth: '1px',
                 borderStyle: 'solid',
@@ -107,34 +107,36 @@ export const components: ThemeOptions['components'] = {
             {
                 props: { color: 'primary' },
                 style: {
-                    backgroundColor: colours.rstoBlue._80,  // Deep teal (#1D4552) — primary fill
+                    backgroundColor: colours.rstoBlue._70,  // Dark teal (#19788E) — primary fill
                     color: colours.rstoGray.white,
                     boxShadow: 'none',
                     '&:hover': {
-                        backgroundColor: colours.rstoBlue._70,  // Slightly lighter on hover (#2D6B7A)
+                        backgroundColor: colours.rstoBlue._60,  // Slightly lighter on hover (#4CAAC1)
                         boxShadow: 'none',
                     },
                     '&.Mui-disabled': {
-                        backgroundColor: colours.rstoNeutral.bone,  // Light sand fill — #F4ECE0
-                        color: colours.rstoNeutral.stone,           // Muted stone text — #BFB197
+                        backgroundColor: colours.rstoGray._30,  // Light gray fill — #F3F3F3
+                        color: colours.rstoGray._90,            // Muted gray text — #474747
                     },
                 },
             },
             {
                 props: { color: 'secondary' },
                 style: {
-                    backgroundColor: 'transparent',
-                    color: colours.rstoBlue._70,              // Teal text (#2D6B7A)
-                    borderColor: colours.rstoBlue._70,        // Teal border
+                    backgroundColor: '#FFFFFF',                  // White fill
+                    color: colours.rstoGray.black,              // Black text (#191919)
+                    borderColor: colours.rstoGray._40,          // Gray border (#EFEFEF)
+                    fontWeight: 400,
+                    padding: '8px 12px',
                     boxShadow: 'none',
                     '&:hover': {
-                        backgroundColor: colours.rstoBlue._10,  // Light teal fill on hover (#E8F2F4)
-                        borderColor: colours.rstoBlue._80,      // Deeper border on hover
+                        backgroundColor: colours.rstoGray._20,  // Light gray fill on hover (#FCFCFC)
+                        borderColor: colours.rstoGray._60,      // Gray border on hover (#D1D1D1)
                         boxShadow: 'none',
                     },
                     '&.Mui-disabled': {
-                        color: colours.rstoNeutral.stone,       // Stone text when disabled
-                        borderColor: colours.rstoNeutral.stone, // Stone border when disabled
+                        color: colours.rstoGray._60,            // Gray text when disabled (#D1D1D1)
+                        borderColor: colours.rstoGray._60,      // Gray border when disabled (#D1D1D1)
                     },
                 },
             },
@@ -169,10 +171,10 @@ export const components: ThemeOptions['components'] = {
                     border: `2px solid ${colours.rstoGreen._30}`,            // Alert border
                     borderLeft: `4px solid ${colours.rstoGreen._60}`,        // Left stripe
                     '& .MuiAlert-icon': {
-                        color: colours.rstoGreen._80,
+                        color: colours.rstoGreen._70,
                     },
                     '& .MuiAlert-action': {
-                        color: colours.rstoGreen._80,
+                        color: colours.rstoGreen._70,
                     },
                 },
             },

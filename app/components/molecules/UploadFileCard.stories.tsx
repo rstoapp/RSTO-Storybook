@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import * as React from 'react';
+import { fn } from 'storybook/test';
 import { Box } from '@mui/material';
 import UploadFileCard from './UploadFileCard';
 
@@ -11,10 +12,26 @@ const meta = {
     args: {
         title: 'Age',
         acceptedFileFormats: ['csv'],
-        onUpload: () => {},
-        onDeleteFile: () => {},
+        onUpload: fn(),
+        onDeleteFile: fn(),
     },
     parameters: {
+        layout: 'padded',
+        a11y: {
+            config: {
+                rules: [
+                    { id: 'color-contrast', enabled: true },
+                    { id: 'keyboard', enabled: true },
+                ],
+            },
+        },
+        viewport: {
+            viewports: {
+                mobile: { name: 'Mobile', styles: { width: '375px', height: '812px' } },
+                tablet: { name: 'Tablet', styles: { width: '768px', height: '1024px' } },
+                desktop: { name: 'Desktop', styles: { width: '1440px', height: '900px' } },
+            },
+        },
         docs: {
             description: {
                 component:

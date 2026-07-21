@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import AssignmentLateOutlinedIcon from '@mui/icons-material/AssignmentLateOutlined';
-import HourglassEmptyOutlinedIcon from '@mui/icons-material/HourglassEmptyOutlined';
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import DataProcessingAlert from './DataProcessingAlert';
+import DataProcessingAnimation from './DataProcessingAnimation';
 
 const meta: Meta<typeof DataProcessingAlert> = {
     title: 'RSTO/Molecules/DataStateViews',
@@ -23,11 +24,16 @@ type Story = StoryObj<typeof DataProcessingAlert>;
 export const DataMissing: Story = {
     args: {
         title: 'Data missing',
-        description: 'Data not provided or available for this indicator.\nPlease upload and check back later.',
+        description: 'Data not provided or available for this indicator.',
         icon: (
             <AssignmentLateOutlinedIcon
                 sx={{ color: (theme) => theme.palette.rstoOrange._50, width: '100%', height: '100%' }}
             />
+        ),
+        cta: (
+            <Button color="primary" variant="contained" startIcon={<FileUploadOutlinedIcon />}>
+                Upload data
+            </Button>
         ),
     },
 };
@@ -36,10 +42,6 @@ export const DataProcessing: Story = {
     args: {
         title: 'Processing Data',
         description: 'Your data is being processed.\nPlease check back later.',
-        icon: (
-            <HourglassEmptyOutlinedIcon
-                sx={{ color: (theme) => theme.palette.rstoOrange._50, width: '100%', height: '100%' }}
-            />
-        ),
+        icon: <DataProcessingAnimation />,
     },
 };

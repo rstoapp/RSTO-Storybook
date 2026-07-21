@@ -23,7 +23,7 @@ const StrategyMenu = ({ items, selected, onClick }: StrategyMenuProps) => {
             {items.map((item, index) => (
                 <Tab
                     key={item.tag ?? index}
-                    label={<Typography variant="body2" fontWeight={600}>{item.label}</Typography>}
+                    label={<Typography variant="subtitle2">{item.label}</Typography>}
                 />
             ))}
         </Tabs>

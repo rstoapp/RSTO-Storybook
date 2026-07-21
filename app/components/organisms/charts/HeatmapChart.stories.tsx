@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import HeatmapChart from './HeatmapChart';
-import { HEATMAP_COLORS, hexAlpha } from './chart-theme';
+import { HEATMAP_COLORS, P, hexAlpha } from './chart-theme';
 import { makeScales, makeLegend, makeTooltip, BASE_OPTIONS } from './default-chart-options';
 import { STACKED_TOP_RADIUS } from './stacked-top-radius-plugin';
 
@@ -24,7 +24,7 @@ function makeHeatDatasets(alpha = 1.0) {
         label,
         data: DATA[i],
         backgroundColor: hexAlpha(BAND_COLORS[i], alpha),
-        borderColor: 'white',
+        borderColor: P.paper,
         borderWidth: 1.5,
         stack: 'main',
     }));
@@ -160,9 +160,9 @@ export const ThreeBands: Story = {
         data: {
             labels: MONTHS,
             datasets: [
-                { label: 'Less than 8 hrs',  data: [37, 38, 40, 36, 37, 38, 38], backgroundColor: BAND_COLORS[0], borderColor: 'white', borderWidth: 1.5, stack: 'main' },
-                { label: '8–13 hrs',         data: [30, 28, 26, 30, 28, 27, 29], backgroundColor: BAND_COLORS[2], borderColor: 'white', borderWidth: 1.5, stack: 'main' },
-                { label: 'More than 13 hrs', data: [33, 34, 34, 34, 35, 35, 33], backgroundColor: BAND_COLORS[4], borderColor: 'white', borderWidth: 1.5, stack: 'main' },
+                { label: 'Less than 8 hrs',  data: [37, 38, 40, 36, 37, 38, 38], backgroundColor: BAND_COLORS[0], borderColor: P.paper, borderWidth: 1.5, stack: 'main' },
+                { label: '8–13 hrs',         data: [30, 28, 26, 30, 28, 27, 29], backgroundColor: BAND_COLORS[2], borderColor: P.paper, borderWidth: 1.5, stack: 'main' },
+                { label: 'More than 13 hrs', data: [33, 34, 34, 34, 35, 35, 33], backgroundColor: BAND_COLORS[4], borderColor: P.paper, borderWidth: 1.5, stack: 'main' },
             ],
         },
         options: {

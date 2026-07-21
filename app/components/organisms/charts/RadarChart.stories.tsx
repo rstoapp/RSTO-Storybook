@@ -24,7 +24,7 @@ function makeRadarDataset(
         backgroundColor: hexAlpha(color, fillAlpha),
         borderWidth: lineWidth,
         pointBackgroundColor: color,
-        pointBorderColor: 'white',
+        pointBorderColor: P.paper,
         pointBorderWidth: 2,
         pointRadius,
         pointHoverRadius: pointRadius + 2,

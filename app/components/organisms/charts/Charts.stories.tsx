@@ -26,6 +26,22 @@ const meta: Meta = {
     title: 'RSTO/Organisms/Charts/ChartCard',
     tags: ['autodocs'],
     parameters: {
+        layout: 'padded',
+        a11y: {
+            config: {
+                rules: [
+                    { id: 'color-contrast', enabled: true },
+                    { id: 'keyboard', enabled: true },
+                ],
+            },
+        },
+        viewport: {
+            viewports: {
+                mobile: { name: 'Mobile', styles: { width: '375px', height: '812px' } },
+                tablet: { name: 'Tablet', styles: { width: '768px', height: '1024px' } },
+                desktop: { name: 'Desktop', styles: { width: '1440px', height: '900px' } },
+            },
+        },
         docs: {
             description: {
                 component: `
@@ -399,8 +415,8 @@ export const WithLineChart: StoryObj = {
                     data={{
                         labels: ["Q2 '22", "Q3 '22", "Q4 '22", "Q1 '23", "Q2 '23", "Q3 '23", "Q4 '23", "Q1 '24", "Q2 '24"],
                         datasets: [
-                            { label: 'Supported programs', data: [62, 65, 68, 71, 70, 73, 76, 74, 78], borderColor: SERIES_COLORS[0], backgroundColor: hexAlpha(SERIES_COLORS[0], 0.07), borderWidth: 2, pointBackgroundColor: SERIES_COLORS[0], pointBorderColor: 'white', pointBorderWidth: 2, pointRadius: 4, tension: 0.32, fill: true },
-                            { label: 'Priority programs',  data: [45, 48, 52, 55, 58, 56, 60, 63, 65], borderColor: SERIES_COLORS[1], backgroundColor: hexAlpha(SERIES_COLORS[1], 0.07), borderWidth: 2, pointBackgroundColor: SERIES_COLORS[1], pointBorderColor: 'white', pointBorderWidth: 2, pointRadius: 4, tension: 0.32, fill: true },
+                            { label: 'Supported programs', data: [62, 65, 68, 71, 70, 73, 76, 74, 78], borderColor: SERIES_COLORS[0], backgroundColor: hexAlpha(SERIES_COLORS[0], 0.07), borderWidth: 2, pointBackgroundColor: SERIES_COLORS[0], pointBorderColor: P.paper, pointBorderWidth: 2, pointRadius: 4, tension: 0.32, fill: true },
+                            { label: 'Priority programs',  data: [45, 48, 52, 55, 58, 56, 60, 63, 65], borderColor: SERIES_COLORS[1], backgroundColor: hexAlpha(SERIES_COLORS[1], 0.07), borderWidth: 2, pointBackgroundColor: SERIES_COLORS[1], pointBorderColor: P.paper, pointBorderWidth: 2, pointRadius: 4, tension: 0.32, fill: true },
                         ],
                     }}
                     options={{
@@ -479,8 +495,8 @@ export const WithRadarChart: StoryObj = {
                         data={{
                             labels: AXES,
                             datasets: [
-                                { label: 'Service Provider', data: [72, 65, 80, 58, 75, 68, 70], borderColor: SERIES_COLORS[0], backgroundColor: hexAlpha(SERIES_COLORS[0], 0.15), borderWidth: 2, pointBackgroundColor: SERIES_COLORS[0], pointBorderColor: 'white', pointBorderWidth: 2, pointRadius: 4 },
-                                { label: 'Community',        data: [60, 78, 70, 72, 65, 75, 60], borderColor: SERIES_COLORS[1], backgroundColor: hexAlpha(SERIES_COLORS[1], 0.15), borderWidth: 2, pointBackgroundColor: SERIES_COLORS[1], pointBorderColor: 'white', pointBorderWidth: 2, pointRadius: 4 },
+                                { label: 'Service Provider', data: [72, 65, 80, 58, 75, 68, 70], borderColor: SERIES_COLORS[0], backgroundColor: hexAlpha(SERIES_COLORS[0], 0.15), borderWidth: 2, pointBackgroundColor: SERIES_COLORS[0], pointBorderColor: P.paper, pointBorderWidth: 2, pointRadius: 4 },
+                                { label: 'Community',        data: [60, 78, 70, 72, 65, 75, 60], borderColor: SERIES_COLORS[1], backgroundColor: hexAlpha(SERIES_COLORS[1], 0.15), borderWidth: 2, pointBackgroundColor: SERIES_COLORS[1], pointBorderColor: P.paper, pointBorderWidth: 2, pointRadius: 4 },
                             ],
                         }}
                         options={{
@@ -521,7 +537,7 @@ export const WithHeatmapChart: StoryObj = {
                                 label,
                                 data: [[15, 18, 16, 14, 17, 15, 13], [22, 20, 24, 22, 20, 23, 25], [30, 28, 26, 30, 28, 27, 29], [20, 22, 21, 20, 22, 23, 20], [13, 12, 13, 14, 13, 12, 13]][i],
                                 backgroundColor: HEATMAP_COLORS[i],
-                                borderColor: 'white',
+                                borderColor: P.paper,
                                 borderWidth: 1.5,
                                 stack: 'main',
                             })),
@@ -543,10 +559,10 @@ export const WithHeatmapChart: StoryObj = {
 const DROPDOWN_PAPER_SX = {
     elevation: 0,
     sx: {
-        background: '#FFFFFF',
+        background: P.paper,
         border: `1px solid ${P.sand}`,
         borderRadius: '8px',
-        boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+        boxShadow: `0 4px 16px ${hexAlpha(P.ink, 0.10)}`,
         padding: '4px',
         mt: '4px',
         transition: 'none',

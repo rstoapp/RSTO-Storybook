@@ -1,54 +1,24 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
-import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined';
-import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
-import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import * as React from 'react';
+import dayjs from 'dayjs';
+import quarterOfYear from 'dayjs/plugin/quarterOfYear';
+
+dayjs.extend(quarterOfYear);
 
 import InsightCard from '../molecules/InsightCard';
 import RstoChip from '../molecules/RstoChip';
-import HeadingWithChips from '../molecules/HeadingWithChips';
 import ChartCard, { FilterChip } from '../organisms/charts/ChartCard';
 import MultiLineChart, { mkMultiLineMuted, MultiLineSeries } from '../organisms/charts/MultiLineChart';
 import WeeklyAttendanceChart, { mkAttendanceDatasets } from '../organisms/charts/WeeklyAttendanceChart';
 import { makeScales, makeLegend, makeTooltip, makeTotalLineDataset, BASE_OPTIONS } from '../organisms/charts/default-chart-options';
 import { STACKED_TOP_RADIUS } from '../organisms/charts/stacked-top-radius-plugin';
 import { P } from '../organisms/charts/chart-theme';
-import AppSideMenu, { RstoNavItem } from '../organisms/AppSideMenu';
-
-// ── Nav items ────────────────────────────────────────────────────────────────
-
-const NAV_ITEMS: RstoNavItem[] = [
-    {
-        id: 'dashboard',
-        label: 'Dashboard',
-        icon: <DashboardOutlinedIcon sx={{ fontSize: 16 }} />,
-        children: [
-            {
-                id: 'quantity',
-                label: 'Quantity',
-                children: [{ id: 'qn1', code: 'QN1', label: 'Are there enough ECEC places?' }],
-            },
-            {
-                id: 'quality',
-                label: 'Quality',
-                children: [{ id: 'ql1', code: 'QL1', label: 'Are we delivering quality services?' }],
-            },
-            {
-                id: 'participation',
-                label: 'Participation',
-                children: [{ id: 'p1', code: 'P1', label: 'Community engagement levels' }],
-            },
-        ],
-    },
-    { id: 'upload', label: 'Upload', icon: <FileUploadOutlinedIcon sx={{ fontSize: 16 }} /> },
-    { id: 'settings', label: 'Settings', icon: <SettingsOutlinedIcon sx={{ fontSize: 16 }} /> },
-];
+import AppSideMenu from '../organisms/AppSideMenu';
+import ReportingPeriodSelector from '../organisms/ReportingPeriodSelector';
 
 // ── Chart data ──────────────────────────────────────────────────────────────
 
@@ -177,9 +147,8 @@ const StatChip = ({ icon, label, value, badge }: StatChipProps) => (
 const ServiceProviderPage = () => (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
         <AppSideMenu
-            navItems={NAV_ITEMS}
-            activeItemId="qn1"
-            defaultOpenIds={['dashboard', 'quantity']}
+            variant="service-provider"
+            activeItemId="dashboard"
             onLogout={() => {}}
         />
 
@@ -187,27 +156,29 @@ const ServiceProviderPage = () => (
         <Box sx={{ flex: 1, p: 3, overflow: 'auto' }}>
             {/* Page header */}
             <Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={3}>
-                <HeadingWithChips
-                    heading="Gowrie Victoria"
-                    chips={['Metro Victoria', 'Early Education & Care']}
-                />
+                <Stack spacing={1}>
+                    <Typography variant="h1">Gowrie Victoria</Typography>
+                    <Stack direction="row" alignItems="center" spacing={0.5}>
+                        <LocationOnOutlinedIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+                        <Typography variant="body2" color="text.secondary">
+                            Derby, Western Australia · Early Years Partnership Community
+                        </Typography>
+                    </Stack>
+                </Stack>
                 <Stack direction="row" spacing={2} alignItems="center">
                     <Button
                         variant="outlined"
                         color="secondary"
-                        size="small"
-                        startIcon={<FileDownloadOutlinedIcon sx={{ fontSize: 14 }} />}
+                        size="medium"
+                        startIcon={<FileDownloadOutlinedIcon sx={{ fontSize: 16 }} />}
                     >
                         Export Report
                     </Button>
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        size="small"
-                        startIcon={<CalendarTodayOutlinedIcon sx={{ fontSize: 14 }} />}
-                    >
-                        Q1 2026
-                    </Button>
+                    <ReportingPeriodSelector
+                        value={dayjs('2026-01-01')}
+                        minDate={dayjs('2024-01-01')}
+                        maxDate={dayjs('2026-12-31')}
+                    />
                 </Stack>
             </Stack>
 

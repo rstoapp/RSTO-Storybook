@@ -33,7 +33,7 @@ function Swatch({ color, label, sublabel }: { color: string; label: string; subl
             >
                 <Typography
                     variant="caption"
-                    sx={{ color: isLight ? '#191919' : '#FFFFFF', fontWeight: 600, fontSize: 10 }}
+                    sx={{ color: isLight ? rstoGray.black : rstoGray.white, fontWeight: 600, fontSize: 10 }}
                 >
                     {color}
                 </Typography>
@@ -112,7 +112,7 @@ const usageRows: { component: string; role: string; token: string; value: string
     { component: 'Alert (error)',       role: 'Left stripe',       token: 'rstoRed._60',           value: rstoRed._60 },
     // ── Surfaces ──────────────────────────────────────────────────────────────
     { component: 'Page background',    role: 'Surface',           token: 'rstoNeutral.paper',     value: rstoNeutral.paper },
-    { component: 'Card background',    role: 'Surface',           token: '#FDFAF4 (warm card)',   value: '#FDFAF4' },
+    { component: 'Card background',    role: 'Surface',           token: 'rstoNeutral.bone',      value: rstoNeutral.bone },
     // ── Text ──────────────────────────────────────────────────────────────────
     { component: 'Body text',          role: 'Primary text',      token: 'rstoNeutral.ink',       value: rstoNeutral.ink },
     { component: 'Supporting text',    role: 'Secondary text',    token: 'rstoNeutral.shadow',    value: rstoNeutral.shadow },

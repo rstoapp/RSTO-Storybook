@@ -6,6 +6,25 @@ const meta: Meta<typeof RstoChip> = {
     title: 'RSTO/Molecules/RstoChip',
     component: RstoChip,
     tags: ['autodocs'],
+    parameters: {
+        layout: 'centered',
+        a11y: {
+            config: {
+                rules: [
+                    { id: 'color-contrast', enabled: true },
+                    { id: 'keyboard', enabled: true },
+                    { id: 'focus-trap', enabled: true },
+                ],
+            },
+        },
+        viewport: {
+            viewports: {
+                mobile: { name: 'Mobile', styles: { width: '375px', height: '812px' } },
+                tablet: { name: 'Tablet', styles: { width: '768px', height: '1024px' } },
+                desktop: { name: 'Desktop', styles: { width: '1440px', height: '900px' } },
+            },
+        },
+    },
     args: {
         text: 'Label',
     },
